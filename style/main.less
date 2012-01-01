@@ -1,7 +1,94 @@
-body
+.container,
+.obstacle
 {
-  font-family: "Good Dog";
-  font-size: 25px;
-  background : #fff * 0.9;
+  position: absolute;
+  xbackground: #eee;
+  overflow: hidden;
+
+  -webkit-transition-property: background;
+  -webkit-transition-duration: 0.2s, 0.2s;
+  -webkit-transition-timing-function: ease;
+}
+
+/* body.dragging .container */
+body .container
+{
+  background-image: url("images/checker.svg");
+}
+
+.obstacle
+{
+  background: -webkit-linear-gradient(top, #fa0, #f80);
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
+}
+
+.target 
+{
+  position: absolute;
+  background: -webkit-linear-gradient(top, #ffffff, #fafafa);
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
+
+  -webkit-transition-duration: 0.2s;
+  -webkit-transition-timing-function: ease;
+}
+
+.target /* .dragable */
+{
+  cursor: move;
+}
+
+.target.dragging
+{
+  background: rgba(255,255,255, 0.8);
+}
+
+// ----------------------------------------------------------------------------
+
+#container0
+{
+  left:   24px * 4;
+  top:    24px * 4;
+  width:  24px * 16;
+  height: 24px * 32;
+}
+
+#container1
+{
+  left:   24px * 25;
+  top:    24px * 8;
+  width:  24px * 20;
+  height: 24px * 17;
+}
+
+#container2
+{
+  left:   24px * 48;
+  top:    24px * 12;
+  width:  24px * 12;
+  height: 24px * 8;
+}
+
+#obstacle0
+{
+  left:   24px * 17;
+  top:    24px * 16;
+  width:  24px * 24;
+  height: 24px * 6;
+}
+
+#target0
+{
+  left:   24px * 4;
+  top:    24px * 4;
+  width:  24px * 12;
+  height: 24px * 8;
+}
+
+#target1
+{
+  left:   24px * 4;
+  top:    24px * 13;
+  width:  24px * 4;
+  height: 24px * 4;
 }
 
