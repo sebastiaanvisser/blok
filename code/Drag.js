@@ -10,43 +10,26 @@ function Drag (target, pivot)
   this.target        = target;
   this.pivot         = pivot || target;
 
-  // Configuration variables, can all be set at any moment.
-  this.requireMeta   = false;
-  this.margin        = 0;
-  this.lockX         = false;
-  this.lockY         = false;
-  this.slow          = 0;
-
-  this.tabularX      = 0;
-  this.tabularY      = 0;
-  this.tabularW      = 0;
-  this.tabularH      = 0;
-
-  this.dragAlign     = function (g) { return g; }
-  this.stopAlign     = function (g) { return g; }
-
   // State, private.
   this.dragging      = false;
   this.dragOrigin    = {};
   this.targetOrigin  = {};
   this.geom          = {};
 
-  // Compensate for certain geometry influencing style properties, don't know
-  // how to do this generically.
-  this.containerBorder = 0;
-  this.targetPadding   = 0;
-  this.cellSpacing     = 0;
+  this.dragAlign     = function (g) { return g; }
+  this.stopAlign     = function (g) { return g; }
 
-  // Install event listeners. Dragging start when clicking on the target, all
-  // other events will be document based.
+  this.requireMeta   = false;
+
   $(this.pivot).mousedown(this.startDragging.scope(this));
   $(document.body).mouseup(this.stopDragging.scope(this));
   $(document.body).mousemove(this.drag.scope(this));
-  $(document.body).keydown(this.keydown.scope(this));
-  $(document.body).keyup(this.keyup.scope(this));
+
+  // $(document.body).keydown(this.keydown.scope(this));
+  // $(document.body).keyup(this.keyup.scope(this));
 }
 
-// ----------------------------------------------------------------------------
+/*
 
 Drag.prototype.keydown =
   function keydown (e)
@@ -64,6 +47,7 @@ Drag.prototype.keyup =
     $(this.target).removeClass("dragable");
     $("body").removeClass("dragging");
   }
+*/
 
 Drag.prototype.startDragging =
   function startDragging (e)
@@ -99,7 +83,6 @@ Drag.prototype.drag =
     if (!this.dragging) return true;
 
     var t  = this.target,
-        m  = this.margin,
         dx = e.clientX - this.dragOrigin.x,
         dy = e.clientY - this.dragOrigin.y;
 
