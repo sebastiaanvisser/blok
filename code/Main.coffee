@@ -15,12 +15,16 @@ Class
     c1 = $("#container1")[0]
     c2 = $("#container2")[0]
     o0 = $("#obstacle0")[0]
+    o1 = $("#obstacle1")[0]
+    o2 = $("#obstacle2")[0]
 
-    bounds = Drag.or(Drag.withinElem(c0), Drag.or(Drag.withinElem(c1), Drag.withinElem(c2)))
-    obst = Drag.and(Drag.outsideElem(o0), bounds)
+    containers = Drag.or(Drag.withinElem(c0), Drag.or(Drag.withinElem(c1), Drag.withinElem(c2)))
+    obstacles  = Drag.and(Drag.outsideElem(o0), Drag.and(Drag.outsideElem(o1), Drag.outsideElem(o2)))
 
-    fd.dragAlign = Drag.strech 0.4, obst
-    fd.stopAlign = Drag.and(obst, Drag.grid(24, 24))
+    both = Drag.and(containers, obstacles)
+
+    fd.dragAlign = Drag.strech 0.4, both
+    fd.stopAlign = Drag.and(both, Drag.grid(24, 24))
 
 Static
 
