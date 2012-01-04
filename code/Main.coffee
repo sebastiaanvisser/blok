@@ -4,12 +4,12 @@ Class
 
   Main: ->
     $(document).ready =>
-      @install $("#target0")
-      @install $("#target1")
+      @install $("#target0")[0]
+      @install $("#target1")[0]
 
   install: (t) ->
 
-    fd = new Drag t[0], t[0]
+    fd = new Drag t, t
 
     c0 = $("#container0")[0]
     c1 = $("#container1")[0]

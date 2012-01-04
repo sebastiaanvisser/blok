@@ -122,14 +122,14 @@ Drag.grid =
   }
 
 Drag.within =
-  function within (l, t, r, b)
+  function within (f)
   {
     return function within (g)
     {
-      var xa = Math.min(Math.max(l, g.x), r - g.w);
-      var xb = Math.max(l, Math.min(g.x, r - g.w));
-      var ya = Math.min(Math.max(t, g.y), b - g.h);
-      var yb = Math.max(t, Math.min(g.y, b - g.h));
+      var xa = Math.min(Math.max(f.x, g.x), f.x + f.w - g.w);
+      var xb = Math.max(f.x, Math.min(g.x, f.x + f.w - g.w));
+      var ya = Math.min(Math.max(f.y, g.y), f.y + f.h - g.h);
+      var yb = Math.max(f.y, Math.min(g.y, f.y + f.h - g.h));
       return { x : (xa + xb) / 2
              , y : (ya + yb) / 2
              , w : g.w
@@ -139,21 +139,21 @@ Drag.within =
   }
 
 Drag.outside =
-  function outside (l, t, r, b)
+  function outside (f)
   {
     return function outside (g)
     {
-      var xa  = Math.min(Math.max(l, g.x), r - g.w);
-      var xb  = Math.max(l, Math.min(g.x, r - g.w));
-      var ya  = Math.min(Math.max(t, g.y), b - g.h);
-      var yb  = Math.max(t, Math.min(g.y, b - g.h));
-      var ins = g.x < r && g.x + g.w > l
-             && g.y < b && g.y + g.h > t;
+      var xa  = Math.min(Math.max(f.x, g.x), f.x + f.w - g.w);
+      var xb  = Math.max(f.x, Math.min(g.x, f.x + f.w - g.w));
+      var ya  = Math.min(Math.max(f.y, g.y), f.y + f.h - g.h);
+      var yb  = Math.max(f.y, Math.min(g.y, f.y + f.h - g.h));
+      var ins = g.x < f.x + f.w && g.x + g.w > f.x
+             && g.y < f.y + f.h && g.y + g.h > f.y;
 
-      var left  = g.x - (l - g.w);
-      var right = r - g.x;
-      var up    = g.y - (t - g.h);
-      var down  = b - g.y;
+      var left  = g.x - (f.x - g.w);
+      var right = (f.x + f.w) - g.x;
+      var up    = g.y - (f.y - g.h);
+      var down  = (f.y + f.h) - g.y;
 
       var doLeft  = ins &&                  left  <= right && left  <= up && left  <= down
       var doRight = ins && right <  left &&                   right <= up && right <= down
@@ -172,22 +172,22 @@ Drag.withinElem =
   function withinElem (elem)
   {
     return Drag.within
-      ( elem.offsetLeft
-      , elem.offsetTop
-      , elem.offsetLeft + elem.offsetWidth
-      , elem.offsetTop  + elem.offsetHeight
-      );
+      ({ x : elem.offsetLeft
+       , y : elem.offsetTop
+       , w : elem.offsetWidth
+       , h : elem.offsetHeight
+       });
   }
 
 Drag.outsideElem =
   function outsideElem (elem)
   {
     return Drag.outside
-      ( elem.offsetLeft
-      , elem.offsetTop
-      , elem.offsetLeft + elem.offsetWidth
-      , elem.offsetTop  + elem.offsetHeight
-      );
+      ({ x : elem.offsetLeft
+       , y : elem.offsetTop
+       , w : elem.offsetWidth
+       , h : elem.offsetHeight
+       });
   }
 
 Drag.and = function and (a, b) { return function and (g) { return a(b(g)); }; };
