@@ -4,10 +4,10 @@ Class
 
   Main: ->
     $(document).ready =>
-      @install $("#target0")[0]
-      @install $("#target1")[0]
+      @install $("#target0")[0], $("#target1")[0]
+      @install $("#target1")[0], $("#target0")[0]
 
-  install: (t) ->
+  install: (t, o) ->
 
     fd = new Drag t, t
 
@@ -19,7 +19,7 @@ Class
     o2 = $("#obstacle2")[0]
 
     containers = Drag.or(Drag.withinElem(c0), Drag.or(Drag.withinElem(c1), Drag.withinElem(c2)))
-    obstacles  = Drag.and(Drag.outsideElem(o0), Drag.and(Drag.outsideElem(o1), Drag.outsideElem(o2)))
+    obstacles  = Drag.and(Drag.outsideElem(o0), Drag.and(Drag.outsideElem(o1), Drag.and(Drag.outsideElem(o2), Drag.outsideElem(o))))
 
     both = Drag.and(containers, obstacles)
 

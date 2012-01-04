@@ -171,23 +171,29 @@ Drag.outside =
 Drag.withinElem =
   function withinElem (elem)
   {
-    return Drag.within
-      ({ x : elem.offsetLeft
-       , y : elem.offsetTop
-       , w : elem.offsetWidth
-       , h : elem.offsetHeight
-       });
+    return function (g)
+    {
+      return Drag.within
+        ({ x : elem.offsetLeft
+         , y : elem.offsetTop
+         , w : elem.offsetWidth
+         , h : elem.offsetHeight
+         })(g);
+    }
   }
 
 Drag.outsideElem =
   function outsideElem (elem)
   {
-    return Drag.outside
-      ({ x : elem.offsetLeft
-       , y : elem.offsetTop
-       , w : elem.offsetWidth
-       , h : elem.offsetHeight
-       });
+    return function (g)
+    {
+      return Drag.outside
+        ({ x : elem.offsetLeft
+         , y : elem.offsetTop
+         , w : elem.offsetWidth
+         , h : elem.offsetHeight
+         })(g);
+    }
   }
 
 Drag.and = function and (a, b) { return function and (g) { return a(b(g)); }; };
