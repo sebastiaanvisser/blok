@@ -5,6 +5,12 @@ Function.prototype.scope =
     return function scoped () { return me.apply(scope, arguments); };
   };
 
+window.concat =
+  function concat (xs)
+  {
+    return [].concat.apply([], xs);
+  };
+
 function Drag (target, pivot)
 {
   this.target        = target;
@@ -30,7 +36,6 @@ function Drag (target, pivot)
 }
 
 /*
-
 Drag.prototype.keydown =
   function keydown (e)
   {
@@ -91,7 +96,7 @@ Drag.prototype.drag =
       , y : this.targetOrigin.y + dy
       , w : t.offsetWidth
       , h : t.offsetHeight
-      }
+      };
 
     this.geom = this.dragAlign(this.geom);
     this.positionTarget();
@@ -108,6 +113,23 @@ Drag.prototype.positionTarget =
 
 // ----------------------------------------------------------------------------
 
+Drag.intersect =
+  function intersect (a, b)
+  {
+    var x = Math.max(a.x,       b.x)
+    var y = Math.max(a.y,       b.y)
+    var w = Math.min(a.x + a.w, b.x + b.w) - x
+    var h = Math.min(a.y + a.h, b.y + b.h) - y
+
+    return (w <= 0 || h <= 0) ? null : {x: x, y: y, w: w, h: h}
+  };
+
+Drag.distance =
+  function (a, b)
+  {
+    return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+  };
+
 Drag.grid =
   function grid (w, h)
   {
@@ -118,8 +140,8 @@ Drag.grid =
              , w : g.w
              , h : g.h
              };
-    }
-  }
+    };
+  };
 
 Drag.within =
   function within (f)
@@ -135,8 +157,8 @@ Drag.within =
              , w : g.w
              , h : g.h
              };
-    }
-  }
+    };
+  };
 
 Drag.outside =
   function outside (f)
@@ -145,28 +167,18 @@ Drag.outside =
     {
       var xa  = Math.min(Math.max(f.x, g.x), f.x + f.w - g.w);
       var xb  = Math.max(f.x, Math.min(g.x, f.x + f.w - g.w));
-      var ya  = Math.min(Math.max(f.y, g.y), f.y + f.h - g.h);
-      var yb  = Math.max(f.y, Math.min(g.y, f.y + f.h - g.h));
       var ins = g.x < f.x + f.w && g.x + g.w > f.x
              && g.y < f.y + f.h && g.y + g.h > f.y;
 
-      var left  = g.x - (f.x - g.w);
-      var right = (f.x + f.w) - g.x;
-      var up    = g.y - (f.y - g.h);
-      var down  = (f.y + f.h) - g.y;
-
-      var doLeft  = ins &&                  left  <= right && left  <= up && left  <= down
-      var doRight = ins && right <  left &&                   right <= up && right <= down
-      var doUp    = ins && up    <  left && up    <  right &&                up    <= down
-      var doDown  = ins && down  <  left && down  <  right && down  <  up
-
-      return { x : doLeft ? g.x - left : (doRight ? g.x + right : g.x)
-             , y : doUp   ? g.y - up   : (doDown  ? g.y + down  : g.y)
-             , w : g.w
-             , h : g.h
-             };
-    }
-  }
+      if (ins)
+        return [ { x : f.x - g.w , y : g.y , w : g.w , h : g.h }
+               , { x : f.x + f.w , y : g.y , w : g.w , h : g.h }
+               , { x : g.x , y : f.y - g.h , w : g.w , h : g.h }
+               , { x : g.x , y : f.y + f.h , w : g.w , h : g.h }
+               ];
+        else return [];
+    };
+  };
 
 Drag.withinElem =
   function withinElem (elem)
@@ -179,8 +191,8 @@ Drag.withinElem =
          , w : elem.offsetWidth
          , h : elem.offsetHeight
          })(g);
-    }
-  }
+    };
+  };
 
 Drag.outsideElem =
   function outsideElem (elem)
@@ -193,29 +205,52 @@ Drag.outsideElem =
          , w : elem.offsetWidth
          , h : elem.offsetHeight
          })(g);
-    }
-  }
-
-Drag.and = function and (a, b) { return function and (g) { return a(b(g)); }; };
-
-Drag.distance =
-  function (a, b)
-  {
-    return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
-  }
-
-Drag.or =
-  function or (a, b)
-  {
-    return function or (g)
-    {
-      var ag = a(g);
-      var bg = b(g);
-      var da = Drag.distance(g, ag);
-      var db = Drag.distance(g, bg);
-      return da > db ? bg : ag;
     };
   };
+
+Drag.sortByDistance =
+  function sortByDistance (g, xs)
+  {
+    return xs.sort(
+      function (a, b)
+      {
+        a.distance = Drag.distance(a, g);
+        b.distance = Drag.distance(b, g);
+        return a.distance - b.distance;
+      });
+  };
+
+Drag.solver =
+  function solver (disjs, conjs)
+  {
+    function alternatives (v)
+    {
+      return conjs.map(function (conj) { return conj(v); }).filter(function (n) { return n.length; })
+    }
+
+    function best (d, g)
+    {
+      var v = d(g);
+      var alts = alternatives(v);
+
+      var ok = !alts.length;
+      if (ok) return [v];
+
+      alts = concat(alts).map(d).filter(function (n) { return !alternatives(n).length; });
+      return Drag.sortByDistance(g, alts)[0];
+    }
+
+    return function (g)
+    {
+      var oks = disjs.map(function (d) { return best(d, g); });
+
+      return Drag.sortByDistance(g, concat(oks))[0];
+    };
+
+  };
+  
+
+Drag.compose = function compose (a, b) { return function compose (g) { return a(b(g)); }; };
 
 Drag.strech =
   function strech (n, a)

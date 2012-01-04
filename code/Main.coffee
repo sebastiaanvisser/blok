@@ -18,13 +18,13 @@ Class
     o1 = $("#obstacle1")[0]
     o2 = $("#obstacle2")[0]
 
-    containers = Drag.or(Drag.withinElem(c0), Drag.or(Drag.withinElem(c1), Drag.withinElem(c2)))
-    obstacles  = Drag.and(Drag.outsideElem(o0), Drag.and(Drag.outsideElem(o1), Drag.and(Drag.outsideElem(o2), Drag.outsideElem(o))))
+    containers = [ Drag.withinElem(c0), Drag.withinElem(c1), Drag.withinElem(c2) ]
+    obstacles  = [ Drag.outsideElem(o0), Drag.outsideElem(o1), Drag.outsideElem(o2), Drag.outsideElem(o) ]
 
-    both = Drag.and(containers, obstacles)
+    both = Drag.solver(containers, obstacles)
 
-    fd.dragAlign = Drag.strech 0.4, both
-    fd.stopAlign = Drag.and(both, Drag.grid(24, 24))
+    fd.dragAlign = Drag.strech 0.8, both
+    fd.stopAlign = Drag.compose(both, Drag.grid(24, 24))
 
 Static
 
