@@ -3,27 +3,31 @@ Module "Main"
 Class
 
   Main: ->
-    $(document).ready =>
-      @install $("#target0")[0], $("#target1")[0]
-      @install $("#target1")[0], $("#target0")[0]
+    Drag.debug = true
 
-  install: (t, o) ->
+    $(document).ready =>
+      @position()
+      @install t for t in $(".target").get()
+
+  position: ->
+    for c in $(".container, .obstacle, .target")
+      geom = $(c).attr("data-geom").split(/\s+/).filter((n) -> !n.match(/^\s*$/)).map (n) -> n * 24 + "px"
+      $(c).css("left",   geom[0])
+      $(c).css("top",    geom[1])
+      $(c).css("width",  geom[2])
+      $(c).css("height", geom[3])
+
+  install: (t) ->
 
     fd = new Drag t, t
 
-    c0 = $("#container0")[0]
-    c1 = $("#container1")[0]
-    c2 = $("#container2")[0]
-    o0 = $("#obstacle0")[0]
-    o1 = $("#obstacle1")[0]
-    o2 = $("#obstacle2")[0]
+    containers = (Drag.element c for c in $(".container").get())
+    obstacles  = (Drag.element c for c in $(".obstacle").get())
+    targets    = (Drag.element c for c in $(".target").get() when c isnt t)
 
-    containers = [ Drag.withinElem(c0), Drag.withinElem(c1), Drag.withinElem(c2) ]
-    obstacles  = [ Drag.outsideElem(o0), Drag.outsideElem(o1), Drag.outsideElem(o2), Drag.outsideElem(o) ]
+    both = Drag.solver(containers, obstacles.concat targets)
 
-    both = Drag.solver(containers, obstacles)
-
-    fd.dragAlign = Drag.strech 0.8, both
+    fd.dragAlign = both # Drag.strech 0.3, both
     fd.stopAlign = Drag.compose(both, Drag.grid(24, 24))
 
 Static

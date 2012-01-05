@@ -5,12 +5,6 @@ Function.prototype.scope =
     return function scoped () { return me.apply(scope, arguments); };
   };
 
-window.concat =
-  function concat (xs)
-  {
-    return [].concat.apply([], xs);
-  };
-
 function Drag (target, pivot)
 {
   this.target        = target;
@@ -113,6 +107,18 @@ Drag.prototype.positionTarget =
 
 // ----------------------------------------------------------------------------
 
+Drag.concat =
+  function concat (xs)
+  {
+    return [].concat.apply([], xs);
+  };
+
+Drag.notNull =
+  function notNull (xs)
+  {
+    return xs.filter(function (n) { return !!n; })
+  };
+
 Drag.intersect =
   function intersect (a, b)
   {
@@ -122,6 +128,13 @@ Drag.intersect =
     var h = Math.min(a.y + a.h, b.y + b.h) - y
 
     return (w <= 0 || h <= 0) ? null : {x: x, y: y, w: w, h: h}
+  };
+
+Drag.contained =
+  function contained (a, b)
+  {
+    return a.x >= b.x && a.x + a.w <= b.x + b.w
+        && a.y >= b.y && a.y + a.h <= b.y + b.h
   };
 
 Drag.distance =
@@ -180,31 +193,16 @@ Drag.outside =
     };
   };
 
-Drag.withinElem =
-  function withinElem (elem)
+Drag.element =
+  function element (elem)
   {
-    return function (g)
+    return function ()
     {
-      return Drag.within
-        ({ x : elem.offsetLeft
-         , y : elem.offsetTop
-         , w : elem.offsetWidth
-         , h : elem.offsetHeight
-         })(g);
-    };
-  };
-
-Drag.outsideElem =
-  function outsideElem (elem)
-  {
-    return function (g)
-    {
-      return Drag.outside
-        ({ x : elem.offsetLeft
-         , y : elem.offsetTop
-         , w : elem.offsetWidth
-         , h : elem.offsetHeight
-         })(g);
+      return { x : elem.offsetLeft
+             , y : elem.offsetTop
+             , w : elem.offsetWidth
+             , h : elem.offsetHeight
+             };
     };
   };
 
@@ -220,36 +218,91 @@ Drag.sortByDistance =
       });
   };
 
-Drag.solver =
-  function solver (disjs, conjs)
+Drag.debugElem =
+  function debugElemElem (v)
+  {
+    return function (g)
+    {
+      var e = $("<div class='debug " + v + "'></div>");
+      $("body").append(e);
+      $(e).css("left",   g.x + "px");
+      $(e).css("top",    g.y + "px");
+      $(e).css("width",  g.w + "px");
+      $(e).css("height", g.h + "px");
+    };
+  };
+
+Drag.serialize =
+  function serialize (g)
+  {
+    return [g.x, g.y, g.w, g.h].join(",");
+  };
+
+Drag.solve1 =
+  function solve1 (container, g, obstacles)
   {
     function alternatives (v)
     {
-      return conjs.map(function (conj) { return conj(v); }).filter(function (n) { return n.length; })
+      return obstacles.map(function (o) { return Drag.outside(o)(v); }).filter(function (n) { return n.length; })
     }
 
-    function best (d, g)
+    var done = {};
+
+    var options = { good : [], maybe : [Drag.within(container)(g)] }
+
+    for (var i = 0; options.maybe.length && i < obstacles.length + 1; i++)
     {
-      var v = d(g);
-      var alts = alternatives(v);
+      // var bounds = Drag.concat(options.maybe.map(Drag.within(container)));
+      var bounds = options.maybe;
+      var blocking = bounds.map(
+                       function (b)
+                       {
+                         var as = Drag.concat(alternatives(b)).filter(function (o) { return Drag.contained(o, container); });
+                         return as.length
+                           ? { good : [ ], maybe : as.filter(function (o) { return !done[Drag.serialize(o)]; }) }
+                           : { good : [b], maybe : [] };
+                       });
 
-      var ok = !alts.length;
-      if (ok) return [v];
+      options = { good  : options.good.concat(Drag.concat(blocking.map(function (b) { return b.good;  })))
+                , maybe : Drag.concat(blocking.map(function (b) { return b.maybe; }))
+                };
 
-      alts = concat(alts).map(d).filter(function (n) { return !alternatives(n).length; });
-      return Drag.sortByDistance(g, alts)[0];
+      if (Drag.debug)
+      {
+        options.good.forEach(Drag.debugElem("good"));
+        options.maybe.forEach(Drag.debugElem("maybe"));
+      }
+
+      options.good.map(function (o) { done[Drag.serialize(o)] = true; });
+      options.maybe.map(function (o) { done[Drag.serialize(o)] = true; });
     }
 
+    return Drag.sortByDistance(g, options.good).slice(0, 1);
+  };
+
+Drag.solver =
+  function solver (containers, obstacles)
+  {
     return function (g)
     {
-      var oks = disjs.map(function (d) { return best(d, g); });
+      if (Drag.debug)
+      {
+        $(".good").remove();
+        $(".maybe").remove();
+      }
+      var options = containers.map
+        (function (cont)
+         {
+           var c  = cont();
+           var os = Drag.notNull(obstacles.map(function (o) { return Drag.intersect(o(), c); }));
+           return Drag.solve1(c, g, os);
+         });
 
-      return Drag.sortByDistance(g, concat(oks))[0];
+      return Drag.sortByDistance(g, Drag.concat(options))[0];
     };
 
   };
   
-
 Drag.compose = function compose (a, b) { return function compose (g) { return a(b(g)); }; };
 
 Drag.strech =

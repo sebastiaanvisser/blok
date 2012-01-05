@@ -1,110 +1,58 @@
+/* body.dragging .container */
+body .container
+{
+  z-index: 0;
+  background-image: url("images/checker.svg");
+}
+
 .container,
-.obstacle
+.obstacle,
+.target,
+.good,
+.maybe,
 {
   position: absolute;
-  xbackground: #eee;
   overflow: hidden;
+  z-index: 1;
 
   -webkit-transition-property: background;
   -webkit-transition-duration: 0.2s, 0.2s;
   -webkit-transition-timing-function: ease;
 }
 
-/* body.dragging .container */
-body .container
-{
-  background-image: url("images/checker.svg");
-}
-
 .obstacle
 {
   background: -webkit-linear-gradient(top, #fa0, #f80);
+  opacity: 0.85;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
+}
+
+.good
+{
+  background: -webkit-linear-gradient(top, #0fe, #0fd);
+  opacity: 0.2;
+}
+
+.maybe
+{
+  background: -webkit-linear-gradient(top, #fe0, #fd0);
+  opacity: 0.2;
 }
 
 .target 
 {
-  position: absolute;
   background: -webkit-linear-gradient(top, #ffffff, #fafafa);
-  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.1);
 
   -webkit-transition-duration: 0.1s;
   -webkit-transition-timing-function: ease;
-}
 
-.target /* .dragable */
-{
+  z-index: 2;
   cursor: move;
 }
 
 .target.dragging
 {
   background: rgba(255,255,255, 0.8);
-}
-
-// ----------------------------------------------------------------------------
-
-#container0
-{
-  left:   24px * 4;
-  top:    24px * 4;
-  width:  24px * 16;
-  height: 24px * 26;
-}
-
-#container1
-{
-  left:   24px * 25;
-  top:    24px * 8;
-  width:  24px * 20;
-  height: 24px * 16;
-}
-
-#container2
-{
-  left:   24px * 46;
-  top:    24px * 0;
-  width:  24px * 12;
-  height: 24px * 40;
-}
-
-#obstacle0
-{
-  left:   24px * 3;
-  top:    24px * 16;
-  width:  24px * 4;
-  height: 24px * 4;
-}
-
-#obstacle1
-{
-  left:   24px * 17;
-  top:    24px * 16;
-  width:  24px * 24;
-  height: 24px * 6;
-}
-
-#obstacle2
-{
-  left:   24px * 48;
-  top:    24px * 20;
-  width:  24px * 4;
-  height: 24px * 1;
-}
-
-#target0
-{
-  left:   24px * 4;
-  top:    24px * 4;
-  width:  24px * 12;
-  height: 24px * 8;
-}
-
-#target1
-{
-  left:   24px * 4;
-  top:    24px * 13;
-  width:  24px * 4;
-  height: 24px * 4;
 }
 
