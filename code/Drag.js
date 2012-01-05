@@ -161,15 +161,10 @@ Drag.within =
   {
     return function within (g)
     {
-      var xa = Math.min(Math.max(f.x, g.x), f.x + f.w - g.w);
-      var xb = Math.max(f.x, Math.min(g.x, f.x + f.w - g.w));
-      var ya = Math.min(Math.max(f.y, g.y), f.y + f.h - g.h);
-      var yb = Math.max(f.y, Math.min(g.y, f.y + f.h - g.h));
-      return { x : (xa + xb) / 2
-             , y : (ya + yb) / 2
-             , w : g.w
-             , h : g.h
-             };
+      var x = Math.min(Math.max(f.x, g.x), f.x + f.w - g.w);
+      var y = Math.min(Math.max(f.y, g.y), f.y + f.h - g.h);
+      var r  = {x : x, y : y, w : g.w, h : g.h};
+      return Drag.contained(r, f) ? [r] : [];
     };
   };
 
@@ -183,13 +178,13 @@ Drag.outside =
       var ins = g.x < f.x + f.w && g.x + g.w > f.x
              && g.y < f.y + f.h && g.y + g.h > f.y;
 
-      if (ins)
-        return [ { x : f.x - g.w , y : g.y , w : g.w , h : g.h }
-               , { x : f.x + f.w , y : g.y , w : g.w , h : g.h }
-               , { x : g.x , y : f.y - g.h , w : g.w , h : g.h }
-               , { x : g.x , y : f.y + f.h , w : g.w , h : g.h }
-               ];
-        else return [];
+      return ins
+        ? [ { x : f.x - g.w , y : g.y , w : g.w , h : g.h }
+          , { x : f.x + f.w , y : g.y , w : g.w , h : g.h }
+          , { x : g.x , y : f.y - g.h , w : g.w , h : g.h }
+          , { x : g.x , y : f.y + f.h , w : g.w , h : g.h }
+          ]
+        : [];
     };
   };
 
@@ -248,11 +243,10 @@ Drag.solve1 =
 
     var done = {};
 
-    var options = { good : [], maybe : [Drag.within(container)(g)] }
+    var options = { good : [], maybe : Drag.within(container)(g) }
 
     for (var i = 0; options.maybe.length && i < obstacles.length + 1; i++)
     {
-      // var bounds = Drag.concat(options.maybe.map(Drag.within(container)));
       var bounds = options.maybe;
       var blocking = bounds.map(
                        function (b)

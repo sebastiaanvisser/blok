@@ -3,7 +3,7 @@ Module "Main"
 Class
 
   Main: ->
-    Drag.debug = true
+    # Drag.debug = true
 
     $(document).ready =>
       @position()
@@ -27,7 +27,7 @@ Class
 
     both = Drag.solver(containers, obstacles.concat targets)
 
-    fd.dragAlign = both # Drag.strech 0.3, both
+    fd.dragAlign = Drag.strech 0.3, both
     fd.stopAlign = Drag.compose(both, Drag.grid(24, 24))
 
 Static
