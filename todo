@@ -1,0 +1,2 @@
+- Containers that directly border eachother can grow in such a way that they
+  full overlap, this makes sure we can drag over the edges of the two.
