@@ -1,10 +1,3 @@
-/* body.dragging .container */
-body .container
-{
-  z-index: 0;
-  background-image: url("images/checker.svg");
-}
-
 .container,
 .obstacle,
 .target,
@@ -13,11 +6,15 @@ body .container
 {
   position: absolute;
   overflow: hidden;
-  z-index: 1;
 
   -webkit-transition-property: background;
   -webkit-transition-duration: 0.2s, 0.2s;
   -webkit-transition-timing-function: ease;
+}
+
+.container
+{
+  background-image: url("images/checker.svg");
 }
 
 .obstacle
@@ -25,18 +22,7 @@ body .container
   background: -webkit-linear-gradient(top, #fa0, #f80);
   opacity: 0.85;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
-}
-
-.good
-{
-  background: -webkit-linear-gradient(top, #0fe, #0fd);
-  opacity: 0.2;
-}
-
-.maybe
-{
-  background: -webkit-linear-gradient(top, #fe0, #fd0);
-  opacity: 0.2;
+  cursor: move;
 }
 
 .target 
@@ -46,13 +32,23 @@ body .container
 
   -webkit-transition-duration: 0.1s;
   -webkit-transition-timing-function: ease;
-
-  z-index: 2;
   cursor: move;
 }
 
 .target.dragging
 {
   background: rgba(255,255,255, 0.8);
+}
+
+.good
+{
+  background: -webkit-linear-gradient(top, #8f8, #8f8);
+  opacity: 0.2;
+}
+
+.maybe
+{
+  background: -webkit-linear-gradient(top, #f88, #f88);
+  opacity: 0.2;
 }
 

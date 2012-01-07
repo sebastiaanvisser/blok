@@ -219,7 +219,7 @@ Drag.debugElem =
     return function (g)
     {
       var e = $("<div class='debug " + v + "'></div>");
-      $("body").append(e);
+      $("#debug").append(e);
       $(e).css("left",   g.x + "px");
       $(e).css("top",    g.y + "px");
       $(e).css("width",  g.w + "px");
@@ -281,8 +281,7 @@ Drag.solver =
     {
       if (Drag.debug)
       {
-        $(".good").remove();
-        $(".maybe").remove();
+        $("#debug *").remove();
       }
       var options = containers.map
         (function (cont)
