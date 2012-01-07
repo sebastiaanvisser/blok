@@ -4,7 +4,10 @@
 <!--#include virtual="3rd/jquery-nightly.js" -->
 
 // Plain JavaScript libraries.
-<!--#include virtual="code/drag.js" -->
+<!--#include virtual="code/Util.js"       -->
+<!--#include virtual="code/Geom.js"       -->
+<!--#include virtual="code/Drag.js"       -->
+<!--#include virtual="code/Constraint.js" -->
 
 // CoffeeScript utilities.
 var __slice = Array.prototype.slice

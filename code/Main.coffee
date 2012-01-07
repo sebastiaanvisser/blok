@@ -23,21 +23,21 @@ Class
 
     fd = new Drag t, t
 
-    containers = (Drag.element c for c in $(".container").get())
-    obstacles  = (Drag.element c for c in $(".obstacle").get())
-    targets    = (Drag.element c for c in $(".target").get() when c isnt t)
+    containers = (Constraint.element c for c in $(".container").get())
+    obstacles  = (Constraint.element c for c in $(".obstacle").get())
+    targets    = (Constraint.element c for c in $(".target").get() when c isnt t)
 
-    both = Drag.solver(containers, obstacles.concat targets)
+    both = Constraint.solver(containers, obstacles.concat targets)
 
-    fd.onDragAlign   = Drag.strech 0.7, both
-    fd.stopDragAlign = Drag.compose (Drag.grid 24, 24), both
+    fd.onDragAlign   = Constraint.strech 0.7, both
+    fd.stopDragAlign = Constraint.compose (Constraint.grid 24, 24), both
 
     # fd.onResizeAlign =
-    fd.stopResizeAlign = Drag.grid 24, 24
+    fd.stopResizeAlign = Constraint.grid 24, 24
 
   installOC: (t) ->
     fd = new Drag t, t
-    fd.stopDragAlign = fd.stopResizeAlign = Drag.grid 24, 24
+    fd.stopDragAlign = fd.stopResizeAlign = Constraint.grid 24, 24
 
 Static
 
