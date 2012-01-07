@@ -3,11 +3,12 @@ Module "Main"
 Class
 
   Main: ->
-    Drag.debug = 1
+    #drag.debug = 1
     $(document).ready =>
       @position()
-      @install t for t in $(".target").get()
-      @installO t for t in $(".obstacle").get()
+      @install   t for t in $(".target").get()
+      @installOC t for t in $(".obstacle").get()
+      @installOC t for t in $(".container").get()
 
   position: ->
     for c in $(".container, .obstacle, .target")
@@ -28,12 +29,15 @@ Class
 
     both = Drag.solver(containers, obstacles.concat targets)
 
-    fd.dragAlign = Drag.strech 0.7, both
-    fd.stopAlign = Drag.compose(Drag.grid(24, 24), both)
+    fd.onDragAlign   = Drag.strech 0.7, both
+    fd.stopDragAlign = Drag.compose (Drag.grid 24, 24), both
 
-  installO: (t) ->
+    # fd.onResizeAlign =
+    fd.stopResizeAlign = Drag.grid 24, 24
+
+  installOC: (t) ->
     fd = new Drag t, t
-    fd.stopAlign = Drag.grid(24, 24)
+    fd.stopDragAlign = fd.stopResizeAlign = Drag.grid 24, 24
 
 Static
 

@@ -1,43 +1,25 @@
-.container,
-.obstacle,
-.target,
-.good,
-.maybe,
+.container, .obstacle, .target, .good, .maybe,
 {
   position: absolute;
-  overflow: hidden;
+  -webkit-box-sizing: border-box;
 
-  -webkit-transition-property: background;
-  -webkit-transition-duration: 0.2s, 0.2s;
+  -webkit-transition-property: left, top, width, height, opacity, border-color;
+  -webkit-transition-duration: 0.4s;
   -webkit-transition-timing-function: ease;
 }
 
 .container
 {
   background-image: url("images/checker.svg");
+  -webkit-box-shadow: inset 0 0 10px rgba(0,0,0, 0.2);
 }
 
 .obstacle
 {
-  background: -webkit-linear-gradient(top, #fa0, #f80);
-  opacity: 0.85;
+  background-image: url("images/stripes.svg"), -webkit-linear-gradient(top, #fb0, #f80);
+  xopacity: 0.85;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
   cursor: move;
-}
-
-.target 
-{
-  background: -webkit-linear-gradient(top, #ffffff, #fafafa);
-  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.1);
-
-  -webkit-transition-duration: 0.1s;
-  -webkit-transition-timing-function: ease;
-  cursor: move;
-}
-
-.target.dragging
-{
-  background: rgba(255,255,255, 0.8);
 }
 
 .good
@@ -50,5 +32,33 @@
 {
   background: -webkit-linear-gradient(top, #f88, #f88);
   opacity: 0.2;
+}
+
+.target 
+{
+  background: -webkit-linear-gradient(top, #ffffff, #f7f7f7);
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+  cursor: move;
+}
+
+.container, .obstacle, .target, .good, .maybe,
+{
+  border-color: rgba(192,0,255, 0);
+
+  
+  &.left         { cursor: w-resize; border-left:   solid 4px rgba(192,0,255, 1); background-position: -4px 0px; }
+  &.right        { cursor: e-resize; border-right:  solid 4px rgba(192,0,255, 1); }
+  &.top          { cursor: n-resize; border-top:    solid 4px rgba(192,0,255, 1); background-position: 0px -4px; }
+  &.bottom       { cursor: s-resize; border-bottom: solid 4px rgba(192,0,255, 1); }
+  &.top.left     { cursor: nw-resize; background-position: -4px -4px; }
+  &.top.right    { cursor: ne-resize; }
+  &.bottom.left  { cursor: sw-resize; }
+  &.bottom.right { cursor: se-resize; }
+}
+
+.target.dragging,
+.target.resizing
+{
+  background: rgba(255,255,255, 0.8);
 }
 
