@@ -213,16 +213,17 @@ Drag.prototype.stopResizing =
 Drag.prototype.resize =
   function resize (x, y)
   {
-    var r  = this.resizeDir;
+    var d  = this.resizeDir;
     var t  = this.target;
     var dx = x - this.resizeOrigin.x;
     var dy = y - this.resizeOrigin.y;
 
     this.geom =
-      { x : this.origin.x +                       (r.left ? Math.min(this.origin.w, dx) : 0)
-      , y : this.origin.y +                       (r.top  ? Math.min(this.origin.h, dy) : 0)
-      , w : Math.max(0, this.origin.w + (r.right  ? dx : 0) - (r.left ? dx : 0))
-      , h : Math.max(0, this.origin.h + (r.bottom ? dy : 0) - (r.top  ? dy : 0))
+      { x : this.origin.x + (d.left ? Math.min(this.origin.w, dx) : 0)
+      , y : this.origin.y + (d.top  ? Math.min(this.origin.h, dy) : 0)
+      , w : Math.max(0, this.origin.w + (d.right  ? dx : 0) - (d.left ? dx : 0))
+      , h : Math.max(0, this.origin.h + (d.bottom ? dy : 0) - (d.top  ? dy : 0))
+      , d : d
       };
 
     this.geom = this.onResizeAlign(this.geom);

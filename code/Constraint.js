@@ -58,6 +58,27 @@ Constraint.element =
     };
   };
 
+Constraint.bounded =
+  function bounded (minx, maxx, miny, maxy)
+  {
+    return function (g)
+    {
+      var dw = g.w
+      var dh = g.h
+      if (minx !== null) dw = Math.max(minx, dw);
+      if (miny !== null) dh = Math.max(miny, dh);
+      if (maxx !== null) dw = Math.min(maxx, dw);
+      if (maxy !== null) dh = Math.min(maxy, dh);
+      return { x : g.d.right  ? g.x : g.x - dw + g.w
+             , y : g.d.bottom ? g.y : g.y - dh + g.h
+             , w : dw
+             , h : dh
+             };
+    };
+  };
+
+// ----------------------------------------------------------------------------
+
 Constraint.sortByDistance =
   function sortByDistance (g, xs)
   {
@@ -114,7 +135,7 @@ Constraint.solve1 =
                            : { good : [b], maybe : [] };
                        });
 
-      options = { good  : options.good.concat(Util.concat(blocking.map(function (b) { return b.good;  })))
+      options = { good  : options.good.concat(Util.concat(blocking.map(function (b) { return b.good; })))
                 , maybe : Util.concat(blocking.map(function (b) { return b.maybe; }))
                 };
 
@@ -136,10 +157,7 @@ Constraint.solver =
   {
     return function (g)
     {
-      if (Constraint.debug)
-      {
-        $("#debug *").remove();
-      }
+      if (Constraint.debug) $("#debug *").remove();
       var options = containers.map
         (function (cont)
          {
@@ -171,4 +189,40 @@ Constraint.strech =
       return ag;
     };
   };
+
+
+
+
+Constraint.solverX =
+  function solverX (containers, obstacles)
+  {
+    return function (g)
+    {
+// todo
+      if (g.d.bottom)
+      {
+        var region = { x : g.x, y : g.y, w : g.w, h : Infinity };
+        var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(g), region); }));
+        closest = os.sort(function (a, b) { return a.y - b.y; })[0];
+        if (closest) return {x : g.x, y : g.y, w : g.w, h : Math.min(g.h, closest.y - g.y)};
+        else return g;
+      }
+
+      if (g.d.right)
+      {
+        var region = { x : g.x, y : g.y, w : Infinity, h : g.h };
+        var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(g), region); }));
+        closest = os.sort(function (a, b) { return a.y - b.y; })[0];
+        if (closest) return {x : g.x, y : g.y, w : Math.min(g.w, closest.x - g.x), h : g.h};
+        else return g;
+      }
+
+      return g;
+    };
+  };
+
+
+
+
+
 

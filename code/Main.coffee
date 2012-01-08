@@ -27,17 +27,22 @@ Class
     obstacles  = (Constraint.element c for c in $(".obstacle").get())
     targets    = (Constraint.element c for c in $(".target").get() when c isnt t)
 
-    both = Constraint.solver(containers, obstacles.concat targets)
+    both = Constraint.solver containers, (obstacles.concat targets)
 
     fd.onDragAlign   = Constraint.strech 0.7, both
     fd.stopDragAlign = Constraint.compose (Constraint.grid 24, 24), both
 
-    # fd.onResizeAlign =
+
+    fd.onResizeAlign   = Constraint.solverX containers, (obstacles.concat targets)
     fd.stopResizeAlign = Constraint.grid 24, 24
 
   installOC: (t) ->
+
     fd = new Drag t, t
-    fd.stopDragAlign = fd.stopResizeAlign = Constraint.grid 24, 24
+
+    fd.stopDragAlign   = Constraint.grid 24, 24
+    fd.onResizeAlign   = Constraint.grid 24, 24
+    fd.stopResizeAlign = Constraint.grid 24, 24
 
 Static
 

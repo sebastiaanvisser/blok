@@ -3,9 +3,7 @@
   position: absolute;
   -webkit-box-sizing: border-box;
 
-  -webkit-transition-property: left, top, width, height, opacity, border-color;
-  -webkit-transition-duration: 0.4s;
-  -webkit-transition-timing-function: ease;
+  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease, border-color 1s ease;
 }
 
 .container
@@ -25,13 +23,13 @@
 .good
 {
   background: -webkit-linear-gradient(top, #8f8, #8f8);
-  opacity: 0.2;
+  opacity: 0.4;
 }
 
 .maybe
 {
   background: -webkit-linear-gradient(top, #f88, #f88);
-  opacity: 0.2;
+  opacity: 0.4;
 }
 
 .target 
@@ -44,7 +42,6 @@
 .container, .obstacle, .target, .good, .maybe,
 {
   border-color: rgba(192,0,255, 0);
-
   
   &.left         { cursor: w-resize; border-left:   solid 4px rgba(192,0,255, 1); background-position: -4px 0px; }
   &.right        { cursor: e-resize; border-right:  solid 4px rgba(192,0,255, 1); }
