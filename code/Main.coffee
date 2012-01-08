@@ -21,7 +21,7 @@ Class
 
   install: (t) ->
 
-    fd = new Drag t, t
+    fd = new Drag $(t), $(t)
 
     containers = (Constraint.element c for c in $(".container").get())
     obstacles  = (Constraint.element c for c in $(".obstacle").get())
@@ -38,7 +38,7 @@ Class
 
   installOC: (t) ->
 
-    fd = new Drag t, t
+    fd = new Drag $(t), $(t)
 
     fd.stopDragAlign   = Constraint.grid 24, 24
     fd.onResizeAlign   = Constraint.grid 24, 24

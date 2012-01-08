@@ -21,9 +21,9 @@ function Drag (target, pivot)
   this.onResizeAlign   = function (g) { return g; }
   this.stopResizeAlign = function (g) { return g; }
 
-  $(this.pivot).mousedown    (this.mousedown.scope(this));
-  $(this.pivot).mousemove    (this.hovering.scope(this));
-  $(this.pivot).mouseout     (this.mouseout.scope(this));
+  this.pivot.mousedown       (this.mousedown.scope(this));
+  this.pivot.mousemove       (this.hovering.scope(this));
+  this.pivot.mouseout        (this.mouseout.scope(this));
   $(document.body).mouseup   (this.mouseup.scope(this));
   $(document.body).mousemove (this.mousemove.scope(this));
 }
@@ -33,10 +33,10 @@ function Drag (target, pivot)
 Drag.prototype.render =
   function render ()
   {
-    this.target.style.left   = this.geom.x + "px";
-    this.target.style.top    = this.geom.y + "px";
-    this.target.style.width  = this.geom.w + "px";
-    this.target.style.height = this.geom.h + "px";
+    this.target.css("left",   this.geom.x + "px");
+    this.target.css("top",    this.geom.y + "px");
+    this.target.css("width",  this.geom.w + "px");
+    this.target.css("height", this.geom.h + "px");
   };
 
 Drag.prototype.hovering =
@@ -46,10 +46,10 @@ Drag.prototype.hovering =
 
     var resizeDir = this.inResizeBorder(e.clientX, e.clientY);
     this.resetResizeStyling();
-    if (resizeDir.left  ) $(this.target).addClass("left");
-    if (resizeDir.right ) $(this.target).addClass("right");
-    if (resizeDir.top   ) $(this.target).addClass("top");
-    if (resizeDir.bottom) $(this.target).addClass("bottom");
+    if (resizeDir.left  ) this.target.addClass("left");
+    if (resizeDir.right ) this.target.addClass("right");
+    if (resizeDir.top   ) this.target.addClass("top");
+    if (resizeDir.bottom) this.target.addClass("bottom");
   };
 
 Drag.prototype.mouseout =
@@ -90,14 +90,14 @@ Drag.prototype.mousemove =
 Drag.prototype.turnOffTransitions =
   function turnOffTransitions ()
   {
-    this.transitions = this.target.style["-webkit-transition-property"];
-    this.target.style["-webkit-transition-property"] = "none";
+    this.transitions = this.target.css("-webkit-transition-property");
+    this.target.css("-webkit-transition-property", "none");
   };
 
 Drag.prototype.restoreTransitions =
   function restoreTransitions ()
   {
-    this.target.style["-webkit-transition-property"] = this.transitions;
+    this.target.css("-webkit-transition-property", this.transitions);
   };
 
 // ----------------------------------------------------------------------------
@@ -107,17 +107,17 @@ Drag.prototype.restoreTransitions =
 Drag.prototype.startDragging =
   function startDragging (x, y)
   {
-    $(this.target).parent().append(this.target);
+    this.target.parent().append(this.target);
     this.dragging = true;
-    $(this.target).addClass("dragging");
+    this.target.addClass("dragging");
     this.turnOffTransitions();
 
     this.dragOrigin = { x : x, y : y };
     this.origin =
-      { x : this.target.offsetLeft
-      , y : this.target.offsetTop
-      , w : this.target.offsetWidth
-      , h : this.target.offsetHeight
+      { x : this.target[0].offsetLeft
+      , y : this.target[0].offsetTop
+      , w : this.target[0].offsetWidth
+      , h : this.target[0].offsetHeight
       };
 
     this.drag(x, y);
@@ -127,7 +127,7 @@ Drag.prototype.stopDragging =
   function stopDragging ()
   {
     this.dragging = false;
-    $(this.target).removeClass("dragging");
+    this.target.removeClass("dragging");
     this.restoreTransitions();
 
     this.geom = this.stopDragAlign(this.geom);
@@ -162,37 +162,37 @@ Drag.prototype.inResizeBorder =
   {
     var m = this.resizeMargin;
     var t = this.target;
-    return { left   : -t.offsetLeft                 + x <= m
-           , right  :  t.offsetLeft + t.offsetWidth - x <= m
-           , top    : -t.offsetTop                  + y <= m
-           , bottom :  t.offsetTop + t.offsetHeight - y <= m
+    return { left   : -t[0].offsetLeft                    + x <= m
+           , right  :  t[0].offsetLeft + t[0].offsetWidth - x <= m
+           , top    : -t[0].offsetTop                     + y <= m
+           , bottom :  t[0].offsetTop + t[0].offsetHeight - y <= m
            };
   };
 
 Drag.prototype.resetResizeStyling =
   function resetResizeStyling ()
   {
-    $(this.target).removeClass("top");
-    $(this.target).removeClass("bottom");
-    $(this.target).removeClass("left");
-    $(this.target).removeClass("right");
+    this.target.removeClass("top");
+    this.target.removeClass("bottom");
+    this.target.removeClass("left");
+    this.target.removeClass("right");
   };
 
 Drag.prototype.startResizing =
   function startResizing (x, y, r)
   {
-    $(this.target).parent().append(this.target);
+    this.target.parent().append(this.target);
     this.resizing = true;
-    $(this.target).addClass("resizing");
+    this.target.addClass("resizing");
     this.turnOffTransitions();
 
     this.resizeDir = r;
     this.resizeOrigin = { x : x, y : y };
     this.origin       =
-      { x : this.target.offsetLeft
-      , y : this.target.offsetTop
-      , w : this.target.offsetWidth
-      , h : this.target.offsetHeight
+      { x : this.target[0].offsetLeft
+      , y : this.target[0].offsetTop
+      , w : this.target[0].offsetWidth
+      , h : this.target[0].offsetHeight
       };
 
     this.resize(x, y);
@@ -202,7 +202,7 @@ Drag.prototype.stopResizing =
   function stopResizing ()
   {
     this.resizing = false;
-    $(this.target).removeClass("resizing");
+    this.target.removeClass("resizing");
     this.restoreTransitions();
 
     this.geom = this.stopResizeAlign(this.geom);
