@@ -3,7 +3,7 @@
   position: absolute;
   -webkit-box-sizing: border-box;
 
-  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease, border-color 1s ease;
+  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease; // , border-color 1s ease;
 }
 
 .container
@@ -23,18 +23,19 @@
 .good
 {
   background: -webkit-linear-gradient(top, #8f8, #8f8);
-  opacity: 0.4;
+  xopacity: 0.4;
 }
 
 .maybe
 {
   background: -webkit-linear-gradient(top, #f88, #f88);
-  opacity: 0.4;
+  xopacity: 0.4;
 }
 
 .target 
 {
   background: -webkit-linear-gradient(top, #ffffff, #f7f7f7);
+  opacity: 0.9;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.1);
   cursor: move;
 }
@@ -43,11 +44,11 @@
 {
   border-color: rgba(192,0,255, 0);
   
-  &.left         { cursor: w-resize; border-left:   solid 4px rgba(192,0,255, 1); background-position: -4px 0px; }
-  &.right        { cursor: e-resize; border-right:  solid 4px rgba(192,0,255, 1); }
-  &.top          { cursor: n-resize; border-top:    solid 4px rgba(192,0,255, 1); background-position: 0px -4px; }
-  &.bottom       { cursor: s-resize; border-bottom: solid 4px rgba(192,0,255, 1); }
-  &.top.left     { cursor: nw-resize; background-position: -4px -4px; }
+  &.left         { cursor: w-resize; border-left:   solid 8px rgba(192,0,255, 1); background-position: -8px 0px; }
+  &.right        { cursor: e-resize; border-right:  solid 8px rgba(192,0,255, 1); }
+  &.top          { cursor: n-resize; border-top:    solid 8px rgba(192,0,255, 1); background-position: 0px -8px; }
+  &.bottom       { cursor: s-resize; border-bottom: solid 8px rgba(192,0,255, 1); }
+  &.top.left     { cursor: nw-resize; background-position: -8px -8px; }
   &.top.right    { cursor: ne-resize; }
   &.bottom.left  { cursor: sw-resize; }
   &.bottom.right { cursor: se-resize; }

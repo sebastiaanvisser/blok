@@ -11,7 +11,7 @@ function Drag (target, pivot)
   this.dragOrigin      = {};
 
   this.allowResizing   = true;
-  this.resizeMargin    = 6;
+  this.resizeMargin    = 8;
   this.resizeDir       = null;
   this.resizing        = false;
   this.resizeOrigin    = {};
@@ -33,10 +33,10 @@ function Drag (target, pivot)
 Drag.prototype.render =
   function render ()
   {
-    this.target.css("left",   this.geom.x + "px");
-    this.target.css("top",    this.geom.y + "px");
-    this.target.css("width",  this.geom.w + "px");
-    this.target.css("height", this.geom.h + "px");
+    this.target.css("left",    this.geom.x                + "px");
+    this.target.css("top",     this.geom.y                + "px");
+    this.target.css("width",  (this.geom.r - this.geom.x) + "px");
+    this.target.css("height", (this.geom.b - this.geom.y) + "px");
   };
 
 Drag.prototype.hovering =
@@ -64,6 +64,7 @@ Drag.prototype.mousedown =
   {
     var r = this.inResizeBorder(e.clientX, e.clientY);
     var i = r.left || r.right || r.top || r.bottom;
+    this.target.parent().append(this.target);
     if ( i && this.allowResizing) this.startResizing(e.clientX, e.clientY, r);
     if (!i && this.allowDragging) this.startDragging(e.clientX, e.clientY);
     return false;
@@ -107,19 +108,11 @@ Drag.prototype.restoreTransitions =
 Drag.prototype.startDragging =
   function startDragging (x, y)
   {
-    this.target.parent().append(this.target);
     this.dragging = true;
     this.target.addClass("dragging");
     this.turnOffTransitions();
-
     this.dragOrigin = { x : x, y : y };
-    this.origin =
-      { x : this.target[0].offsetLeft
-      , y : this.target[0].offsetTop
-      , w : this.target[0].offsetWidth
-      , h : this.target[0].offsetHeight
-      };
-
+    this.origin = Geom.fromElement(this.target[0]);
     this.drag(x, y);
   };
 
@@ -129,7 +122,6 @@ Drag.prototype.stopDragging =
     this.dragging = false;
     this.target.removeClass("dragging");
     this.restoreTransitions();
-
     this.geom = this.stopDragAlign(this.geom);
     this.render();
   };
@@ -138,14 +130,15 @@ Drag.prototype.drag =
   function drag (x, y)
   {
     var t  = this.target,
+        o  = this.origin,
         dx = x - this.dragOrigin.x,
         dy = y - this.dragOrigin.y;
 
     this.geom =
-      { x : this.origin.x + dx
-      , y : this.origin.y + dy
-      , w : this.origin.w
-      , h : this.origin.h
+      { x : o.x + dx
+      , y : o.y + dy
+      , r : o.r + dx
+      , b : o.b + dy
       };
 
     this.geom = this.onDragAlign(this.geom);
@@ -161,11 +154,11 @@ Drag.prototype.inResizeBorder =
   function inResizeBorder (x, y)
   {
     var m = this.resizeMargin;
-    var t = this.target;
-    return { left   : -t[0].offsetLeft                    + x <= m
-           , right  :  t[0].offsetLeft + t[0].offsetWidth - x <= m
-           , top    : -t[0].offsetTop                     + y <= m
-           , bottom :  t[0].offsetTop + t[0].offsetHeight - y <= m
+    var e = Geom.fromElement(this.target[0]);
+    return { left   : Math.abs(e.x - x) <= m
+           , right  : Math.abs(e.r - x) <= m
+           , top    : Math.abs(e.y - y) <= m
+           , bottom : Math.abs(e.b - y) <= m
            };
   };
 
@@ -181,20 +174,12 @@ Drag.prototype.resetResizeStyling =
 Drag.prototype.startResizing =
   function startResizing (x, y, r)
   {
-    this.target.parent().append(this.target);
     this.resizing = true;
     this.target.addClass("resizing");
     this.turnOffTransitions();
-
     this.resizeDir = r;
     this.resizeOrigin = { x : x, y : y };
-    this.origin       =
-      { x : this.target[0].offsetLeft
-      , y : this.target[0].offsetTop
-      , w : this.target[0].offsetWidth
-      , h : this.target[0].offsetHeight
-      };
-
+    this.origin = Geom.fromElement(this.target[0]);
     this.resize(x, y);
   };
 
@@ -204,7 +189,6 @@ Drag.prototype.stopResizing =
     this.resizing = false;
     this.target.removeClass("resizing");
     this.restoreTransitions();
-
     this.geom = this.stopResizeAlign(this.geom);
     this.render();
     this.resetResizeStyling();
@@ -219,10 +203,10 @@ Drag.prototype.resize =
     var dy = y - this.resizeOrigin.y;
 
     this.geom =
-      { x : this.origin.x + (d.left ? Math.min(this.origin.w, dx) : 0)
-      , y : this.origin.y + (d.top  ? Math.min(this.origin.h, dy) : 0)
-      , w : Math.max(0, this.origin.w + (d.right  ? dx : 0) - (d.left ? dx : 0))
-      , h : Math.max(0, this.origin.h + (d.bottom ? dy : 0) - (d.top  ? dy : 0))
+      { x : this.origin.x + (d.left   ? dx : 0)
+      , y : this.origin.y + (d.top    ? dy : 0)
+      , r : this.origin.r + (d.right  ? dx : 0)
+      , b : this.origin.b + (d.bottom ? dy : 0)
       , d : d
       };
 

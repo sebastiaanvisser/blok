@@ -13,11 +13,10 @@ Class
   position: ->
     for c in $(".container, .obstacle, .target")
       geom = $(c).attr("data-geom").split(/\s+/).filter((n) -> !n.match(/^\s*$/)).map (n) -> n * 24 + "px"
-      $(c)
-        .css("left",   geom[0])
-        .css("top",    geom[1])
-        .css("width",  geom[2])
-        .css("height", geom[3])
+      $(c).css("left",   geom[0])
+          .css("top",    geom[1])
+          .css("width",  geom[2])
+          .css("height", geom[3])
 
   install: (t) ->
 
@@ -29,10 +28,8 @@ Class
 
     both = Constraint.solver containers, (obstacles.concat targets)
 
-    fd.onDragAlign   = Constraint.strech 0.7, both
-    fd.stopDragAlign = Constraint.compose (Constraint.grid 24, 24), both
-
-
+    fd.onDragAlign     = Constraint.strech 0.5, both
+    fd.stopDragAlign   = Constraint.compose (Constraint.grid 24, 24), both
     fd.onResizeAlign   = Constraint.solverX containers, (obstacles.concat targets)
     fd.stopResizeAlign = Constraint.grid 24, 24
 

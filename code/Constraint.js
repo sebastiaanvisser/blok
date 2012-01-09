@@ -7,8 +7,8 @@ Constraint.grid =
     {
       return { x : Math.round(g.x / w) * w
              , y : Math.round(g.y / h) * h
-             , w : Math.round(g.w / w) * w
-             , h : Math.round(g.h / h) * h
+             , r : Math.round(g.r / w) * w
+             , b : Math.round(g.b / h) * h
              };
     };
   };
@@ -18,10 +18,17 @@ Constraint.within =
   {
     return function within (g)
     {
-      var x = Math.min(Math.max(f.x, g.x), f.x + f.w - g.w);
-      var y = Math.min(Math.max(f.y, g.y), f.y + f.h - g.h);
-      var r  = {x : x, y : y, w : g.w, h : g.h};
-      return Geom.contained(r, f) ? [r] : [];
+      var w = g.r - g.x;
+      var h = g.b - g.y;
+      var x = Math.min(Math.max(f.x, g.x), f.r - w);
+      var y = Math.min(Math.max(f.y, g.y), f.b - h);
+      var z =
+          { x : x
+          , y : y
+          , r : x + w
+          , b : y + h
+          };
+      return [z];
     };
   };
 
@@ -30,52 +37,23 @@ Constraint.outside =
   {
     return function outside (g)
     {
-      var xa  = Math.min(Math.max(f.x, g.x), f.x + f.w - g.w);
-      var xb  = Math.max(f.x, Math.min(g.x, f.x + f.w - g.w));
-      var ins = g.x < f.x + f.w && g.x + g.w > f.x
-             && g.y < f.y + f.h && g.y + g.h > f.y;
+      if (!Geom.intersect(f, g)) return [];
 
-      return ins
-        ? [ { x : f.x - g.w , y : g.y , w : g.w , h : g.h }
-          , { x : f.x + f.w , y : g.y , w : g.w , h : g.h }
-          , { x : g.x , y : f.y - g.h , w : g.w , h : g.h }
-          , { x : g.x , y : f.y + f.h , w : g.w , h : g.h }
-          ]
-        : [];
+      var fw = f.r - f.x;
+      var fh = f.b - f.y;
+      var gw = g.r - g.x;
+      var gh = g.b - g.y;
+
+      return [ { x : f.x - gw , y : g.y,       r : f.x      , b : g.b      }
+             , { x : f.r      , y : g.y,       r : f.r + gw , b : g.b      }
+             , { x : g.x      , y : f.y - gh , r : g.r      , b : f.y      }
+             , { x : g.x      , y : f.b      , r : g.r      , b : f.b + gh }
+             ];
     };
   };
 
 Constraint.element =
-  function element (elem)
-  {
-    return function ()
-    {
-      return { x : elem.offsetLeft
-             , y : elem.offsetTop
-             , w : elem.offsetWidth
-             , h : elem.offsetHeight
-             };
-    };
-  };
-
-Constraint.bounded =
-  function bounded (minx, maxx, miny, maxy)
-  {
-    return function (g)
-    {
-      var dw = g.w
-      var dh = g.h
-      if (minx !== null) dw = Math.max(minx, dw);
-      if (miny !== null) dh = Math.max(miny, dh);
-      if (maxx !== null) dw = Math.min(maxx, dw);
-      if (maxy !== null) dh = Math.min(maxy, dh);
-      return { x : g.d.right  ? g.x : g.x - dw + g.w
-             , y : g.d.bottom ? g.y : g.y - dh + g.h
-             , w : dw
-             , h : dh
-             };
-    };
-  };
+  function element (e) { return function () { return Geom.fromElement(e); }; };
 
 // ----------------------------------------------------------------------------
 
@@ -100,8 +78,8 @@ Constraint.debugElem =
       $("#debug").append(e);
       $(e).css("left",   g.x + "px");
       $(e).css("top",    g.y + "px");
-      $(e).css("width",  g.w + "px");
-      $(e).css("height", g.h + "px");
+      $(e).css("width",  (g.r - g.x) + "px");
+      $(e).css("height", (g.b - g.y) + "px");
     };
   };
 
@@ -125,19 +103,21 @@ Constraint.solve1 =
 
     for (var i = 0; options.maybe.length && i < obstacles.length + 1; i++)
     {
-      var bounds = options.maybe;
-      var blocking = bounds.map(
-                       function (b)
-                       {
-                         var as = Util.concat(alternatives(b)).filter(function (o) { return Geom.contained(o, container); });
-                         return as.length
-                           ? { good : [ ], maybe : as.filter(function (o) { return !done[Constraint.serialize(o)]; }) }
-                           : { good : [b], maybe : [] };
-                       });
+      var blocking =
+        options.maybe.map
+          (function (b)
+           {
+             var as = Util.concat(alternatives(b)).filter(function (o) { return Geom.contained(o, container); });
+             return as.length
+               ? { good : [ ], maybe : as.filter(function (o) { return !done[Constraint.serialize(o)]; }) }
+               : { good : [b], maybe : [] };
+           });
 
-      options = { good  : options.good.concat(Util.concat(blocking.map(function (b) { return b.good; })))
-                , maybe : Util.concat(blocking.map(function (b) { return b.maybe; }))
-                };
+
+      options =
+        { good  : options.good.concat(Util.concat(blocking.map(function (b) { return b.good; })))
+        , maybe : Util.concat(blocking.map(function (b) { return b.maybe; }))
+        };
 
       if (Constraint.debug)
       {
@@ -180,49 +160,52 @@ Constraint.strech =
     {
       var ag = a(g);
       var d  = Geom.distance(g, ag);
-      var dx = ag.x - g.x;
-      var dy = ag.y - g.y;
-
-      ag.x = dx ? ag.x - (Math.abs(dx) / dx) * Math.pow(Math.abs(dx), 1 / (1 + n)) : g.x;
-      ag.y = dy ? ag.y - (Math.abs(dy) / dy) * Math.pow(Math.abs(dy), 1 / (1 + n)) : g.y;
-
+      var dx = ag.x - g.x; ag.x = dx ? ag.x - (Math.abs(dx) / dx) * Math.pow(Math.abs(dx), 1 / (1 + n)) : g.x;
+      var dy = ag.y - g.y; ag.y = dy ? ag.y - (Math.abs(dy) / dy) * Math.pow(Math.abs(dy), 1 / (1 + n)) : g.y;
+      var dx = ag.r - g.r; ag.r = dx ? ag.r - (Math.abs(dx) / dx) * Math.pow(Math.abs(dx), 1 / (1 + n)) : g.r;
+      var dy = ag.b - g.b; ag.b = dy ? ag.b - (Math.abs(dy) / dy) * Math.pow(Math.abs(dy), 1 / (1 + n)) : g.b;
       return ag;
     };
   };
 
-
-
+Constraint.bounded =
+  function bounded (minx, maxx, miny, maxy)
+  {
+    return function (g)
+    {
+      var dw = g.r - g.x
+      var dh = g.b - g.y
+      if (minx !== null) dw = Math.max(minx, dw);
+      if (miny !== null) dh = Math.max(miny, dh);
+      if (maxx !== null) dw = Math.min(maxx, dw);
+      if (maxy !== null) dh = Math.min(maxy, dh);
+      return { x : g.d.left   ? g.r - dw : g.x
+             , y : g.d.top    ? g.b - dh : g.y
+             , r : g.d.right  ? g.x + dw : g.r
+             , b : g.d.bottom ? g.y + dh : g.b
+             };
+    };
+  };
 
 Constraint.solverX =
   function solverX (containers, obstacles)
   {
     return function (g)
     {
-// todo
-      if (g.d.bottom)
-      {
-        var region = { x : g.x, y : g.y, w : g.w, h : Infinity };
-        var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(g), region); }));
-        closest = os.sort(function (a, b) { return a.y - b.y; })[0];
-        if (closest) return {x : g.x, y : g.y, w : g.w, h : Math.min(g.h, closest.y - g.y)};
-        else return g;
-      }
+      var x, y, r, b;
 
-      if (g.d.right)
-      {
-        var region = { x : g.x, y : g.y, w : Infinity, h : g.h };
-        var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(g), region); }));
-        closest = os.sort(function (a, b) { return a.y - b.y; })[0];
-        if (closest) return {x : g.x, y : g.y, w : Math.min(g.w, closest.x - g.x), h : g.h};
-        else return g;
-      }
+      function blocking (region) { return Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(g), region); })); }
 
-      return g;
+      if (g.d.left)   x = blocking(Geom.setX(g, -Infinity)).sort(function (a, b) { return b.r - a.r; })[0];
+      if (g.d.top)    y = blocking(Geom.setY(g, -Infinity)).sort(function (a, b) { return b.b - a.b; })[0];
+      if (g.d.right)  r = blocking(Geom.setR(g,  Infinity)).sort(function (a, b) { return a.x - b.x; })[0];
+      if (g.d.bottom) b = blocking(Geom.setB(g,  Infinity)).sort(function (a, b) { return a.y - b.y; })[0];
+
+      return { x : x ? Math.max(g.x, x.r) : g.x
+             , y : y ? Math.max(g.y, y.b) : g.y
+             , r : r ? Math.min(g.r, r.x) : g.r
+             , b : b ? Math.min(g.b, b.y) : g.b
+             };
     };
   };
-
-
-
-
-
 
