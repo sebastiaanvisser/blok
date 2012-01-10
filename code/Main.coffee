@@ -30,8 +30,9 @@ Class
 
     fd.onDragAlign     = Constraint.strech 0.5, both
     fd.stopDragAlign   = Constraint.compose (Constraint.grid 24, 24), both
+    # fd.onResizeAlign   = Constraint.strech 0.8, (Constraint.compose (Constraint.solverX containers, (obstacles.concat targets)), (Constraint.bounded 24, 24))
     fd.onResizeAlign   = Constraint.solverX containers, (obstacles.concat targets)
-    fd.stopResizeAlign = Constraint.grid 24, 24
+    fd.stopResizeAlign = Constraint.compose (Constraint.grid 24, 24), (Constraint.compose (Constraint.solverX containers, (obstacles.concat targets)), (Constraint.bounded 24, 24))
 
   installOC: (t) ->
 

@@ -164,25 +164,27 @@ Constraint.strech =
       var dy = ag.y - g.y; ag.y = dy ? ag.y - (Math.abs(dy) / dy) * Math.pow(Math.abs(dy), 1 / (1 + n)) : g.y;
       var dx = ag.r - g.r; ag.r = dx ? ag.r - (Math.abs(dx) / dx) * Math.pow(Math.abs(dx), 1 / (1 + n)) : g.r;
       var dy = ag.b - g.b; ag.b = dy ? ag.b - (Math.abs(dy) / dy) * Math.pow(Math.abs(dy), 1 / (1 + n)) : g.b;
+      ag.d = g.d;
       return ag;
     };
   };
 
 Constraint.bounded =
-  function bounded (minx, maxx, miny, maxy)
+  function bounded (minx, miny, maxx, maxy)
   {
     return function (g)
     {
       var dw = g.r - g.x
       var dh = g.b - g.y
-      if (minx !== null) dw = Math.max(minx, dw);
-      if (miny !== null) dh = Math.max(miny, dh);
-      if (maxx !== null) dw = Math.min(maxx, dw);
-      if (maxy !== null) dh = Math.min(maxy, dh);
+      if (minx !== undefined) dw = Math.max(minx, dw);
+      if (miny !== undefined) dh = Math.max(miny, dh);
+      if (maxx !== undefined) dw = Math.min(maxx, dw);
+      if (maxy !== undefined) dh = Math.min(maxy, dh);
       return { x : g.d.left   ? g.r - dw : g.x
              , y : g.d.top    ? g.b - dh : g.y
              , r : g.d.right  ? g.x + dw : g.r
              , b : g.d.bottom ? g.y + dh : g.b
+             , d : g.d
              };
     };
   };
@@ -193,18 +195,28 @@ Constraint.solverX =
     return function (g)
     {
       var x, y, r, b;
+      var i = Util.notNull(Util.concat
+                ( containers
+                . map(function (c) { return c(); })
+                . map(function (c) { return Geom.intersect(c, g); })
+                ))[0];
 
-      function blocking (region) { return Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(g), region); })); }
+      function blocking (region) { return Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(i), region); })); }
 
-      if (g.d.left)   x = blocking(Geom.setX(g, -Infinity)).sort(function (a, b) { return b.r - a.r; })[0];
-      if (g.d.top)    y = blocking(Geom.setY(g, -Infinity)).sort(function (a, b) { return b.b - a.b; })[0];
-      if (g.d.right)  r = blocking(Geom.setR(g,  Infinity)).sort(function (a, b) { return a.x - b.x; })[0];
-      if (g.d.bottom) b = blocking(Geom.setB(g,  Infinity)).sort(function (a, b) { return a.y - b.y; })[0];
+      if (g.d.left)   x = blocking(Geom.setX(i, -Infinity)).sort(function (a, b) { return b.r - a.r; })[0];
+      if (g.d.top)    y = blocking(Geom.setY(i, -Infinity)).sort(function (a, b) { return b.b - a.b; })[0];
+      if (g.d.right)  r = blocking(Geom.setR(i,  Infinity)).sort(function (a, b) { return a.x - b.x; })[0];
+      if (g.d.bottom) b = blocking(Geom.setB(i,  Infinity)).sort(function (a, b) { return a.y - b.y; })[0];
 
-      return { x : x ? Math.max(g.x, x.r) : g.x
-             , y : y ? Math.max(g.y, y.b) : g.y
-             , r : r ? Math.min(g.r, r.x) : g.r
-             , b : b ? Math.min(g.b, b.y) : g.b
+// $("#debug *").remove();
+// Constraint.debugElem("maybe")(r);
+// Constraint.debugElem("maybe")(b);
+
+      return { x : x ? Math.max(i.x, x.r) : i.x
+             , y : y ? Math.max(i.y, y.b) : i.y
+             , r : r ? Math.min(i.r, r.x) : i.r
+             , b : b ? Math.min(i.b, b.y) : i.b
+             , d : g.x
              };
     };
   };

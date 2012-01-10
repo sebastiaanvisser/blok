@@ -7,6 +7,25 @@ Function.prototype.scope =
 
 function Util () {}
 
+Util.copy =
+  function copy (o)
+  {
+    var c = {};
+    for (p in o) c[p] = o[p];
+    return c;
+  };
+
+Util.set =
+  function copy (k, v)
+  {
+    return function (o)
+    {
+      var c = Util.copy(o);
+      c[k] = v;
+      return c;
+    };
+  };
+
 Util.concat =
   function concat (xs)
   {
