@@ -1,10 +1,11 @@
 function Drag (target, pivot)
 {
-  this.target          = target;
-  this.pivot           = pivot || target;
+  this.target          = $(target);
+  this.pivot           = $(pivot || target);
 
   this.origin          = {};
   this.geom            = {};
+  this.initialize();
 
   this.allowDragging   = true;
   this.dragging        = false;
@@ -29,6 +30,19 @@ function Drag (target, pivot)
 }
 
 // ----------------------------------------------------------------------------
+
+Drag.prototype.initialize =
+  function initialize ()
+  {
+    var g = this
+      .target
+      .attr("data-geom")
+      .split(/\s+/)
+      .filter(function (n) { return !n.match(/^\s*$/); })
+      .map(function (n) { return n * 24; });
+    this.geom = { x : g[0], y : g[1], r : g[2], b : g[3] };
+    this.render();
+  };
 
 Drag.prototype.render =
   function render ()

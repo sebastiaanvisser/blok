@@ -3,44 +3,30 @@ Module "Main"
 Class
 
   Main: ->
-    #drag.debug = 1
+    @group = new Group
+    window.g = @group
+
     $(document).ready =>
-      @position()
-      @install   t for t in $(".target").get()
-      @installOC t for t in $(".obstacle").get()
-      @installOC t for t in $(".container").get()
+      @group.addContainer t for t in $(".container").get()
+      @group.addObstacle  t for t in $(".obstacle").get()
+      @group.addTarget    t for t in $(".target").get()
+      @setupUI()
 
-  position: ->
-    for c in $(".container, .obstacle, .target")
-      geom = $(c).attr("data-geom").split(/\s+/).filter((n) -> !n.match(/^\s*$/)).map (n) -> n * 24 + "px"
-      $(c).css("left",   geom[0])
-          .css("top",    geom[1])
-          .css("width",  geom[2])
-          .css("height", geom[3])
+  setupUI: () ->
+    $("#new-container").click () =>
+      div = $("<div data-geom='10 10 14 16' class=container></div>")
+      $("#containers").append div
+      @group.addContainer div[0]
 
-  install: (t) ->
+    $("#new-target").click () =>
+      div = $("<div data-geom='10 10 14 16' class=target></div>")
+      $("#targets").append div
+      @group.addTarget div[0]
 
-    fd = new Drag $(t), $(t)
-
-    containers = (Constraint.element c for c in $(".container").get())
-    obstacles  = (Constraint.element c for c in $(".obstacle").get())
-    targets    = (Constraint.element c for c in $(".target").get() when c isnt t)
-
-    both = Constraint.solver containers, (obstacles.concat targets)
-
-    fd.onDragAlign     = Constraint.strech 0.5, both
-    fd.stopDragAlign   = Constraint.compose (Constraint.grid 24, 24), both
-    # fd.onResizeAlign   = Constraint.strech 0.8, (Constraint.compose (Constraint.solverX containers, (obstacles.concat targets)), (Constraint.bounded 24, 24))
-    fd.onResizeAlign   = Constraint.solverX containers, (obstacles.concat targets)
-    fd.stopResizeAlign = Constraint.compose (Constraint.grid 24, 24), (Constraint.compose (Constraint.solverX containers, (obstacles.concat targets)), (Constraint.bounded 24, 24))
-
-  installOC: (t) ->
-
-    fd = new Drag $(t), $(t)
-
-    fd.stopDragAlign   = Constraint.grid 24, 24
-    fd.onResizeAlign   = Constraint.grid 24, 24
-    fd.stopResizeAlign = Constraint.grid 24, 24
+    $("#new-obstacle").click () =>
+      div = $("<div data-geom='10 10 14 16' class=obstacle></div>")
+      $("#obstacles").append div
+      @group.addObstacle div[0]
 
 Static
 

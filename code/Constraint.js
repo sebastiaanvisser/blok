@@ -52,8 +52,7 @@ Constraint.outside =
     };
   };
 
-Constraint.element =
-  function element (e) { return function () { return Geom.fromElement(e); }; };
+Constraint.element = function element (e) { return Geom.fromElement(e); };
 
 // ----------------------------------------------------------------------------
 
@@ -132,8 +131,8 @@ Constraint.solve1 =
     return Constraint.sortByDistance(g, options.good).slice(0, 1);
   };
 
-Constraint.solver =
-  function solver (containers, obstacles)
+Constraint.dragSolver =
+  function dragSolver (containers, obstacles)
   {
     return function (g)
     {
@@ -141,8 +140,8 @@ Constraint.solver =
       var options = containers.map
         (function (cont)
          {
-           var c  = cont();
-           var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(), c); }));
+           var c  = Constraint.element(cont);
+           var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(Constraint.element(o), c); }));
            return Constraint.solve1(c, g, os);
          });
 
@@ -189,19 +188,19 @@ Constraint.bounded =
     };
   };
 
-Constraint.solverX =
-  function solverX (containers, obstacles)
+Constraint.resizeSolver =
+  function resizeSolver (containers, obstacles)
   {
     return function (g)
     {
       var x, y, r, b;
       var i = Util.notNull(Util.concat
                 ( containers
-                . map(function (c) { return c(); })
+                . map(Constraint.element)
                 . map(function (c) { return Geom.intersect(c, g); })
                 ))[0];
 
-      function blocking (region) { return Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(i), region); })); }
+      function blocking (region) { return Util.notNull(obstacles.map(function (o) { return Geom.intersect(Constraint.element(o), region); })); }
 
       if (g.d.left)   x = blocking(Geom.setX(i, -Infinity)).sort(function (a, b) { return b.r - a.r; })[0];
       if (g.d.top)    y = blocking(Geom.setY(i, -Infinity)).sort(function (a, b) { return b.b - a.b; })[0];
