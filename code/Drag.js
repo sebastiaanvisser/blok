@@ -40,6 +40,7 @@ Drag.prototype.initialize =
       .split(/\s+/)
       .filter(function (n) { return !n.match(/^\s*$/); })
       .map(function (n) { return n * 24; });
+
     this.geom = { x : g[0], y : g[1], r : g[2], b : g[3] };
     this.render();
   };

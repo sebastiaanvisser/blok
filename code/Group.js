@@ -34,10 +34,10 @@ Group.prototype.addTarget =
     var drag          = Constraint.dragSolver(this.containers, this.obstacles.concat(this.targets));
     var solveR        = Constraint.resizeSolver(this.containers, this.obstacles.concat(this.targets));
     var resize        = Constraint.compose(solveR, this.bound);
-    d.onDragAlign     = this.strech(drag)
-    d.stopDragAlign   = Constraint.compose(this.grid, drag)
-    d.onResizeAlign   = this.strech(resize)
-    d.stopResizeAlign = Constraint.compose(this.grid, resize)
+    d.onDragAlign     = this.strech(drag);
+    d.stopDragAlign   = Constraint.compose(this.grid, drag);
+    d.onResizeAlign   = this.strech(resize);
+    d.stopResizeAlign = Constraint.compose(this.grid, resize);
     this.targets.push(t);
   };
 

@@ -52,8 +52,6 @@ Constraint.outside =
     };
   };
 
-Constraint.element = function element (e) { return Geom.fromElement(e); };
-
 // ----------------------------------------------------------------------------
 
 Constraint.sortByDistance =
@@ -112,9 +110,11 @@ Constraint.solve1 =
                : { good : [b], maybe : [] };
            });
 
+      var ok = Util.concat(blocking.map(function (b) { return b.good; }))
+                   .filter(function (x) { return Geom.contained(x, container); });
 
       options =
-        { good  : options.good.concat(Util.concat(blocking.map(function (b) { return b.good; })))
+        { good  : options.good.concat(ok)
         , maybe : Util.concat(blocking.map(function (b) { return b.maybe; }))
         };
 
@@ -124,8 +124,8 @@ Constraint.solve1 =
         options.maybe.forEach(Constraint.debugElem("maybe"));
       }
 
-      options.good.map(function (o) { done[Constraint.serialize(o)] = true; });
-      options.maybe.map(function (o) { done[Constraint.serialize(o)] = true; });
+      options.good.map  (function (o) { done[Constraint.serialize(o)] = true; });
+      options.maybe.map (function (o) { done[Constraint.serialize(o)] = true; });
     }
 
     return Constraint.sortByDistance(g, options.good).slice(0, 1);
@@ -140,8 +140,8 @@ Constraint.dragSolver =
       var options = containers.map
         (function (cont)
          {
-           var c  = Constraint.element(cont);
-           var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(Constraint.element(o), c); }));
+           var c  = Geom.fromElement(cont);
+           var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(Geom.fromElement(o), c); }));
            return Constraint.solve1(c, g, os);
          });
 
@@ -193,28 +193,30 @@ Constraint.resizeSolver =
   {
     return function (g)
     {
-      var x, y, r, b;
-      var i = Util.notNull(Util.concat
-                ( containers
-                . map(Constraint.element)
-                . map(function (c) { return Geom.intersect(c, g); })
-                ))[0];
+      var x, y, r, b, i, o;
 
-      function blocking (region) { return Util.notNull(obstacles.map(function (o) { return Geom.intersect(Constraint.element(o), region); })); }
+      i = Util.notNull(Util.concat
+            ( containers
+            . map(Geom.fromElement)
+            . map(function (c) { return Geom.intersect(c, g); })
+            ));
 
-      if (g.d.left)   x = blocking(Geom.setX(i, -Infinity)).sort(function (a, b) { return b.r - a.r; })[0];
-      if (g.d.top)    y = blocking(Geom.setY(i, -Infinity)).sort(function (a, b) { return b.b - a.b; })[0];
-      if (g.d.right)  r = blocking(Geom.setR(i,  Infinity)).sort(function (a, b) { return a.x - b.x; })[0];
-      if (g.d.bottom) b = blocking(Geom.setB(i,  Infinity)).sort(function (a, b) { return a.y - b.y; })[0];
+      if (g.d.left)   o = i.sort(function (a, b) { return b.r - a.r; })[0];
+      if (g.d.top)    o = i.sort(function (a, b) { return b.b - a.b; })[0];
+      if (g.d.right)  o = i.sort(function (a, b) { return a.x - b.x; })[0];
+      if (g.d.bottom) o = i.sort(function (a, b) { return a.y - b.y; })[0];
 
-// $("#debug *").remove();
-// Constraint.debugElem("maybe")(r);
-// Constraint.debugElem("maybe")(b);
+      function blocking (region) { return Util.notNull(obstacles.map(function (o) { return Geom.intersect(Geom.fromElement(o), region); })); }
 
-      return { x : x ? Math.max(i.x, x.r) : i.x
-             , y : y ? Math.max(i.y, y.b) : i.y
-             , r : r ? Math.min(i.r, r.x) : i.r
-             , b : b ? Math.min(i.b, b.y) : i.b
+      if (g.d.left)   x = blocking(Geom.setX(o, -Infinity)).sort(function (a, b) { return b.r - a.r; })[0];
+      if (g.d.top)    y = blocking(Geom.setY(o, -Infinity)).sort(function (a, b) { return b.b - a.b; })[0];
+      if (g.d.right)  r = blocking(Geom.setR(o,  Infinity)).sort(function (a, b) { return a.x - b.x; })[0];
+      if (g.d.bottom) b = blocking(Geom.setB(o,  Infinity)).sort(function (a, b) { return a.y - b.y; })[0];
+
+      return { x : x ? Math.max(o.x, x.r) : o.x
+             , y : y ? Math.max(o.y, y.b) : o.y
+             , r : r ? Math.min(o.r, r.x) : o.r
+             , b : b ? Math.min(o.b, b.y) : o.b
              , d : g.x
              };
     };
