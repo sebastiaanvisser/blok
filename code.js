@@ -8,6 +8,7 @@
 <!--#include virtual="code/Geom.js"       -->
 <!--#include virtual="code/Drag.js"       -->
 <!--#include virtual="code/Constraint.js" -->
+<!--#include virtual="code/Group.js"      -->
 
 // CoffeeScript utilities.
 var __slice = Array.prototype.slice
