@@ -104,9 +104,10 @@ Constraint.solve1 =
         options.maybe.map
           (function (b)
            {
-             var as = Util.concat(alternatives(b)).filter(function (o) { return Geom.contained(o, container); });
+             var as = Util.concat(alternatives(b))
+             var bs = as.filter(function (o) { return Geom.contained(o, container); });
              return as.length
-               ? { good : [ ], maybe : as.filter(function (o) { return !done[Constraint.serialize(o)]; }) }
+               ? { good : [ ], maybe : bs.filter(function (o) { return !done[Constraint.serialize(o)]; }) }
                : { good : [b], maybe : [] };
            });
 
@@ -124,8 +125,8 @@ Constraint.solve1 =
         options.maybe.forEach(Constraint.debugElem("maybe"));
       }
 
-      options.good.map  (function (o) { done[Constraint.serialize(o)] = true; });
-      options.maybe.map (function (o) { done[Constraint.serialize(o)] = true; });
+      options.good.forEach  (function (o) { done[Constraint.serialize(o)] = true; });
+      options.maybe.forEach (function (o) { done[Constraint.serialize(o)] = true; });
     }
 
     return Constraint.sortByDistance(g, options.good).slice(0, 1);
@@ -137,34 +138,66 @@ Constraint.dragSolver =
     return function (g)
     {
       if (Constraint.debug) $("#debug *").remove();
-      var options = containers.map
+      var options = Util.concat(containers.map
         (function (cont)
          {
            var c  = Geom.fromElement(cont);
            var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(Geom.fromElement(o), c); }));
            return Constraint.solve1(c, g, os);
-         });
+         }));
 
-      return Constraint.sortByDistance(g, Util.concat(options))[0];
+      return Constraint.sortByDistance(g, options)[0];
     };
 
   };
   
-Constraint.compose = function compose (a, b) { return function compose (g) { return a(b(g)); }; };
+Constraint.compose =
+  function compose (a, b)
+  {
+    return function compose (g, o)
+    {
+      return a(b(g, o), o);
+    };
+  };
+
+Constraint.orOrigin =
+  function orOrigin (a)
+  {
+    return function orOrigin (g, o)
+    {
+      var x = a(g, o);
+      return x === undefined ? o : x;
+    };
+  };
+
+Constraint.orCurrent =
+  function orCurrent (a)
+  {
+    return function orOrigin (g, o)
+    {
+      var x = a(g, o);
+      return x === undefined ? g : x;
+    };
+  };
 
 Constraint.strech =
   function strech (n, a)
   {
-    return function strech (g)
+    return function strech (g, o)
     {
-      var ag = a(g);
-      var d  = Geom.distance(g, ag);
-      var dx = ag.x - g.x; ag.x = dx ? ag.x - (Math.abs(dx) / dx) * Math.pow(Math.abs(dx), 1 / (1 + n)) : g.x;
-      var dy = ag.y - g.y; ag.y = dy ? ag.y - (Math.abs(dy) / dy) * Math.pow(Math.abs(dy), 1 / (1 + n)) : g.y;
-      var dx = ag.r - g.r; ag.r = dx ? ag.r - (Math.abs(dx) / dx) * Math.pow(Math.abs(dx), 1 / (1 + n)) : g.r;
-      var dy = ag.b - g.b; ag.b = dy ? ag.b - (Math.abs(dy) / dy) * Math.pow(Math.abs(dy), 1 / (1 + n)) : g.b;
-      ag.d = g.d;
-      return ag;
+      var ag = a(g, o);
+
+      var dx = ag.x - g.x;
+      var dy = ag.y - g.y;
+      var dr = ag.r - g.r;
+      var db = ag.b - g.b;
+
+      return { x : dx ? ag.x - (Math.abs(dx) / dx) * Math.pow(Math.abs(dx), 1 / (1 + n)) : g.x
+             , y : dy ? ag.y - (Math.abs(dy) / dy) * Math.pow(Math.abs(dy), 1 / (1 + n)) : g.y
+             , r : dr ? ag.r - (Math.abs(dr) / dr) * Math.pow(Math.abs(dr), 1 / (1 + n)) : g.r
+             , b : db ? ag.b - (Math.abs(db) / db) * Math.pow(Math.abs(db), 1 / (1 + n)) : g.b
+             , d : g.d
+             };
     };
   };
 

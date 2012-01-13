@@ -137,7 +137,7 @@ Drag.prototype.stopDragging =
     this.dragging = false;
     this.target.removeClass("dragging");
     this.restoreTransitions();
-    this.geom = this.stopDragAlign(this.geom);
+    this.geom = this.stopDragAlign(this.geom, this.origin);
     this.render();
   };
 
@@ -149,15 +149,14 @@ Drag.prototype.drag =
         dx = x - this.dragOrigin.x,
         dy = y - this.dragOrigin.y;
 
-    this.geom =
+    var g =
       { x : o.x + dx
       , y : o.y + dy
       , r : o.r + dx
       , b : o.b + dy
       };
 
-    this.geom = this.onDragAlign(this.geom);
-
+    this.geom = this.onDragAlign(g, o);
     this.render();
   };
 
@@ -202,11 +201,11 @@ Drag.prototype.stopResizing =
   function stopResizing ()
   {
     this.resizing = false;
+    this.resetResizeStyling();
     this.target.removeClass("resizing");
     this.restoreTransitions();
-    this.geom = this.stopResizeAlign(this.geom);
+    this.geom = this.stopResizeAlign(this.geom, this.origin);
     this.render();
-    this.resetResizeStyling();
   };
 
 Drag.prototype.resize =
@@ -217,7 +216,7 @@ Drag.prototype.resize =
     var dx = x - this.resizeOrigin.x;
     var dy = y - this.resizeOrigin.y;
 
-    this.geom =
+    var g =
       { x : this.origin.x + (d.left   ? dx : 0)
       , y : this.origin.y + (d.top    ? dy : 0)
       , r : this.origin.r + (d.right  ? dx : 0)
@@ -225,7 +224,7 @@ Drag.prototype.resize =
       , d : d
       };
 
-    this.geom = this.onResizeAlign(this.geom);
+    this.geom = this.onResizeAlign(g, this.geom);
     this.render();
   };
 

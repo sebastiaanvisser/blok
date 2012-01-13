@@ -1,43 +1,106 @@
 function Group ()
 {
-  this.containers = [];
-  this.obstacles  = [];
-  this.targets    = [];
+  this.draggers =
+    { containers : []
+    , obstacles  : []
+    , targets    : []
+    }
 
-  this.grid   = Constraint.grid(24, 24);
-  this.bound  = Constraint.bounded(24, 24);
-  this.strech = function (s) { return Constraint.strech(0.8, s); };
+  this.elems =
+    { containers : []
+    , obstacles  : []
+    , targets    : []
+    }
 }
 
 Group.prototype.addContainer =
-  function addContainer (c)
+  function addContainer (t)
   {
-    var d = new Drag(c, c);
-    d.stopDragAlign   = this.grid;
-    d.stopResizeAlign = this.grid;
-    this.containers.push(c);
+    var d = new Drag(t, t);
+    this.draggers.containers.push(d);
+    this.elems.containers.push(t);
+    this.rebuildSolvers();
   };
 
 Group.prototype.addObstacle =
-  function addObstacle (o)
+  function addObstacle (t)
   {
-    var d = new Drag(o, o);
-    d.stopDragAlign   = this.grid;
-    d.stopResizeAlign = this.grid;
-    this.obstacles.push(o);
+    var d = new Drag(t, t);
+    this.draggers.obstacles.push(d);
+    this.elems.obstacles.push(t);
+    this.rebuildSolvers();
   };
 
 Group.prototype.addTarget =
   function addTarget (t)
   {
     var d = new Drag(t, t);
-    var drag          = Constraint.dragSolver(this.containers, this.obstacles.concat(this.targets));
-    var solveR        = Constraint.resizeSolver(this.containers, this.obstacles.concat(this.targets));
-    var resize        = Constraint.compose(solveR, this.bound);
-    d.onDragAlign     = this.strech(drag);
-    d.stopDragAlign   = Constraint.compose(this.grid, drag);
-    d.onResizeAlign   = this.strech(resize);
-    d.stopResizeAlign = Constraint.compose(this.grid, resize);
-    this.targets.push(t);
+    this.draggers.targets.push(d);
+    this.elems.targets.push(t);
+    this.rebuildSolvers();
+  };
+
+Group.prototype.serialize =
+  function serialize ()
+  {
+    return Util.concat
+      ([ this.draggers.containers.map (function (t) { return 'c'+t.geom.x+","+t.geom.y+","+t.geom.r+","+t.geom.b; })
+       , this.draggers.obstacles.map  (function (t) { return 'o'+t.geom.x+","+t.geom.y+","+t.geom.r+","+t.geom.b; })
+       , this.draggers.targets.map    (function (t) { return 't'+t.geom.x+","+t.geom.y+","+t.geom.r+","+t.geom.b; })
+       ]).join(";");
+  };
+
+Group.prototype.rebuildSolvers =
+  function rebuildSolvers ()
+  {
+    var grid   = Constraint.grid(24, 24);
+    var bound  = Constraint.bounded(24, 24);
+    var strech = function (s) { return Constraint.strech(0.8, s); };
+
+    this.draggers.containers.forEach
+      (function (t)
+       {
+         t.stopDragAlign   = grid;
+         t.stopResizeAlign = grid;
+       });
+
+    this.draggers.obstacles.forEach
+      (function (t)
+       {
+         t.stopDragAlign   = grid;
+         t.stopResizeAlign = grid;
+       });
+
+    var elems = this.elems;
+    this.draggers.targets.forEach
+      (function (t)
+       {
+         var others = elems.targets.filter(function (u) { return u !== t.target[0]; });
+
+         var dragSolver =
+           Constraint.orOrigin
+             (Constraint.dragSolver
+               ( elems.containers
+               , elems.obstacles.concat(others)
+               ));
+
+         var resizeSolver =
+           Constraint.orOrigin
+             (Constraint.resizeSolver
+               ( elems.containers
+               , elems.obstacles.concat(others)
+               ));
+
+         var resize          = Constraint.compose(resizeSolver, bound);
+         var onDragAlign     = strech(dragSolver);
+         var stopDragAlign   = Constraint.compose(grid, dragSolver);
+         var onResizeAlign   = strech(resize);
+         var stopResizeAlign = Constraint.compose(grid, resize);
+
+         t.onDragAlign     = onDragAlign;
+         t.stopDragAlign   = stopDragAlign;
+         t.onResizeAlign   = onResizeAlign;
+         t.stopResizeAlign = stopResizeAlign;
+       });
   };
 
