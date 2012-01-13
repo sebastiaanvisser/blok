@@ -54,14 +54,16 @@ Group.prototype.rebuildSolvers =
   function rebuildSolvers ()
   {
     var grid   = Constraint.grid(24, 24);
-    var bound  = Constraint.bounded(24, 24);
     var strech = function (s) { return Constraint.strech(0.8, s); };
+    var resize = strech(Constraint.bounded(24 * 4, 24 * 4));
 
     this.draggers.containers.forEach
       (function (t)
        {
          t.stopDragAlign   = grid;
          t.stopResizeAlign = grid;
+         t.onResizeAlign   = resize;
+         t.stopResizeAlign = Constraint.compose(grid, resize);
        });
 
     this.draggers.obstacles.forEach
@@ -69,6 +71,8 @@ Group.prototype.rebuildSolvers =
        {
          t.stopDragAlign   = grid;
          t.stopResizeAlign = grid;
+         t.onResizeAlign   = resize;
+         t.stopResizeAlign = Constraint.compose(grid, resize);
        });
 
     var elems = this.elems;
@@ -91,6 +95,7 @@ Group.prototype.rebuildSolvers =
                , elems.obstacles.concat(others)
                ));
 
+         var bound           = Constraint.bounded(24, 24);
          var resize          = Constraint.compose(resizeSolver, bound);
          var onDragAlign     = strech(dragSolver);
          var stopDragAlign   = Constraint.compose(grid, dragSolver);
