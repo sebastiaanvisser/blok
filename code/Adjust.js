@@ -203,6 +203,13 @@ Adjust.prototype.drag =
     this.render();
   };
 
+Drag.prototype.touch =
+  function touch ()
+  {
+    this.geom = this.stopDragAlign(this.geom, this.origin);
+    this.render();
+  };
+
 // ----------------------------------------------------------------------------
 // RESIZING
 // ----------------------------------------------------------------------------
