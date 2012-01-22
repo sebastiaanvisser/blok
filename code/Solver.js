@@ -135,8 +135,7 @@ Solver.resize =
 
       i = Util.notNull(Util.concat
             ( containers
-            . map(Geom.element)
-            . map(function (c) { return Geom.intersect(c, g); })
+            . map(function (c) { return Geom.intersect(c(), g); })
             ));
 
       if (g.d.left)   o = i.sort(function (a, b) { return b.r - a.r; })[0];
@@ -144,7 +143,10 @@ Solver.resize =
       if (g.d.right)  o = i.sort(function (a, b) { return a.x - b.x; })[0];
       if (g.d.bottom) o = i.sort(function (a, b) { return a.y - b.y; })[0];
 
-      function blocking (region) { return Util.notNull(obstacles.map(function (o) { return Geom.intersect(Geom.element(o), region); })); }
+      function blocking (region)
+      {
+        return Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(), region); }));
+      }
 
       if (g.d.left)   x = blocking(Geom.setX(o, -Infinity)).sort(function (a, b) { return b.r - a.r; })[0];
       if (g.d.top)    y = blocking(Geom.setY(o, -Infinity)).sort(function (a, b) { return b.b - a.b; })[0];

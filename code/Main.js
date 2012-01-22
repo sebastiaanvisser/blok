@@ -4,18 +4,31 @@ function start ()
   var t0 = new Drag($("#t0")[0]);
   var o0 = new Drag($("#o0")[0]);
 
-  var solver = Dsl.orOrigin
+  var dragSolver = Dsl.orOrigin
     ( Dsl.dragSolver
-      ( [ function () { return Geom.parent(t0.target[0]); }
+      ( [ function () { return Geom.parentEl(t0.target[0]); }
         ]
-      , [ function () { return Geom.element(o0.target[0]); }
+      , [ function () { return Geom.relativeEl(o0.target[0]); }
         ]
       )
     );
 
-  t0.onDragAlign   = Dsl.strech(0.5, solver);
-  t0.stopDragAlign = Dsl.compose(Dsl.grid(24, 24), solver);
-  o0.stopDragAlign = Dsl.grid(24, 24);
+  var resizeSolver = Dsl.orOrigin
+    ( Dsl.resizeSolver
+      ( [ function () { return Geom.parentEl(t0.target[0]); }
+        ]
+      , [ function () { return Geom.relativeEl(o0.target[0]); }
+        ]
+      )
+    );
+
+  t0.onDragAlign     = Dsl.strech(0.5, dragSolver);
+  t0.stopDragAlign   = Dsl.compose(Dsl.grid(24, 24), dragSolver);
+  t0.onResizeAlign   = Dsl.strech(0.5, resizeSolver);
+  t0.stopResizeAlign = Dsl.compose(Dsl.grid(24, 24), resizeSolver);
+
+  o0.stopDragAlign   = Dsl.grid(24, 24);
+  o0.stopResizeAlign = Dsl.grid(24, 24);
 }
 
 $(document).ready(start);

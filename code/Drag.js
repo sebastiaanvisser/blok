@@ -10,6 +10,7 @@ function Drag (target, pivot)
   this.allowDragging   = true;
   this.dragging        = false;
   this.dragOrigin      = {};
+  this.moveToTop       = false;
 
   this.allowResizing   = true;
   this.resizeMargin    = 8;
@@ -61,10 +62,10 @@ Drag.prototype.hovering =
 
     var resizeDir = this.inResizeBorder(e.clientX, e.clientY);
     this.resetResizeStyling();
-    if (resizeDir.left  ) this.target.addClass("left");
-    if (resizeDir.right ) this.target.addClass("right");
-    if (resizeDir.top   ) this.target.addClass("top");
-    if (resizeDir.bottom) this.target.addClass("bottom");
+    if (resizeDir.left  ) this.target.addClass("resizable-left");
+    if (resizeDir.right ) this.target.addClass("resizable-right");
+    if (resizeDir.top   ) this.target.addClass("resizable-top");
+    if (resizeDir.bottom) this.target.addClass("resizable-bottom");
   };
 
 Drag.prototype.mouseout =
@@ -79,7 +80,7 @@ Drag.prototype.mousedown =
   {
     var r = this.inResizeBorder(e.clientX, e.clientY);
     var i = r.left || r.right || r.top || r.bottom;
-    // this.target.parent().append(this.target);
+    if (this.moveToTop) this.target.parent().append(this.target);
     if ( i && this.allowResizing) this.startResizing(e.clientX, e.clientY, r);
     if (!i && this.allowDragging) this.startDragging(e.clientX, e.clientY);
     return false;
@@ -127,7 +128,7 @@ Drag.prototype.startDragging =
     this.target.addClass("dragging");
     this.turnOffTransitions();
     this.dragOrigin = { x : x, y : y };
-    this.origin = Geom.element(this.target[0]);
+    this.origin = Geom.relativeEl(this.target[0]);
     this.drag(x, y);
   };
 
@@ -168,7 +169,7 @@ Drag.prototype.inResizeBorder =
   function inResizeBorder (x, y)
   {
     var m = this.resizeMargin;
-    var e = Geom.element(this.target[0]);
+    var e = Geom.absoluteEl(this.target[0]);
     return { left   : Math.abs(e.x - x) <= m
            , right  : Math.abs(e.r - x) <= m
            , top    : Math.abs(e.y - y) <= m
@@ -179,10 +180,10 @@ Drag.prototype.inResizeBorder =
 Drag.prototype.resetResizeStyling =
   function resetResizeStyling ()
   {
-    this.target.removeClass("top");
-    this.target.removeClass("bottom");
-    this.target.removeClass("left");
-    this.target.removeClass("right");
+    this.target.removeClass("resizable-top");
+    this.target.removeClass("resizable-bottom");
+    this.target.removeClass("resizable-left");
+    this.target.removeClass("resizable-right");
   };
 
 Drag.prototype.startResizing =
@@ -193,7 +194,7 @@ Drag.prototype.startResizing =
     this.turnOffTransitions();
     this.resizeDir = r;
     this.resizeOrigin = { x : x, y : y };
-    this.origin = Geom.element(this.target[0]);
+    this.origin = Geom.relativeEl(this.target[0]);
     this.resize(x, y);
   };
 

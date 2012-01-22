@@ -1,7 +1,7 @@
 function Geom () {}
 
-Geom.element =
-  function element (e)
+Geom.relativeEl =
+  function relativeEl (e)
   {
     return { x : e.offsetLeft
            , y : e.offsetTop
@@ -10,8 +10,29 @@ Geom.element =
            };
   };
 
-Geom.parent =
-  function parent (e)
+Geom.absoluteEl =
+  function absoluteEl (e)
+  {
+    var x = e.offsetLeft
+      , y = e.offsetTop;
+
+    var cur = e;
+    while (cur.parentNode != document.body)
+    {
+      cur = cur.parentNode;
+      x += cur.offsetLeft - cur.scrollLeft;
+      y += cur.offsetTop - cur.scrollTop;
+    }
+
+    return { x : x
+           , y : y
+           , r : x + e.offsetWidth
+           , b : y + e.offsetHeight
+           };
+  };
+
+Geom.parentEl =
+  function parentEl (e)
   {
     return { x : 0
            , y : 0
