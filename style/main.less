@@ -2,8 +2,6 @@
 {
   position: absolute;
   -webkit-box-sizing: border-box;
-
-  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease;
   .resizable();
 }
 
@@ -17,21 +15,12 @@
 .target
 {
   background-image: url("images/stripes.svg"), -webkit-linear-gradient(top, #fb0, #f80);
-  xopacity: 0.85;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
-  cursor: move;
 }
 
 .obstacle 
 {
   background: #fafafa;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.2);
-  cursor: move;
-}
-
-.obstacle.dragging,
-.obstacle.resizing
-{
-  background: rgba(255,255,255, 0.6);
 }
 

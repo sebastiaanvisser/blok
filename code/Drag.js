@@ -32,40 +32,11 @@ function Drag (target, pivot)
 
 // ----------------------------------------------------------------------------
 
-Drag.prototype.initialize =
-  function initialize ()
-  {
-    var g = this
-      .target
-      .attr("data-geom")
-      .split(/\s+/)
-      .filter(function (n) { return !n.match(/^\s*$/); })
-      .map(function (n) { return n * 24; });
-
-    this.geom = { x : g[0], y : g[1], r : g[2], b : g[3] };
-    this.render();
-  };
-
-Drag.prototype.render =
-  function render ()
-  {
-    this.target.css("left",    this.geom.x                + "px");
-    this.target.css("top",     this.geom.y                + "px");
-    this.target.css("width",  (this.geom.r - this.geom.x) + "px");
-    this.target.css("height", (this.geom.b - this.geom.y) + "px");
-  };
-
 Drag.prototype.hovering =
   function hovering (e)
   {
     if (this.dragging || this.resizing) return;
-
-    var resizeDir = this.inResizeBorder(e.clientX, e.clientY);
-    this.resetResizeStyling();
-    if (resizeDir.left  ) this.target.addClass("resizable-left");
-    if (resizeDir.right ) this.target.addClass("resizable-right");
-    if (resizeDir.top   ) this.target.addClass("resizable-top");
-    if (resizeDir.bottom) this.target.addClass("resizable-bottom");
+    this.beforeResizing(e.clientX, e.clientY);
   };
 
 Drag.prototype.mouseout =
@@ -103,6 +74,30 @@ Drag.prototype.mousemove =
   };
 
 // ----------------------------------------------------------------------------
+
+Drag.prototype.initialize =
+  function initialize ()
+  {
+    var g = this
+      .target
+      .attr("data-geom")
+      .split(/\s+/)
+      .filter(function (n) { return !n.match(/^\s*$/); })
+      .map(function (n) { return n * 24; });
+
+    this.target.addClass("draggable");
+    this.geom = { x : g[0], y : g[1], r : g[2], b : g[3] };
+    this.render();
+  };
+
+Drag.prototype.render =
+  function render ()
+  {
+    this.target.css("left",    this.geom.x                + "px");
+    this.target.css("top",     this.geom.y                + "px");
+    this.target.css("width",  (this.geom.r - this.geom.x) + "px");
+    this.target.css("height", (this.geom.b - this.geom.y) + "px");
+  };
 
 Drag.prototype.turnOffTransitions =
   function turnOffTransitions ()
@@ -184,6 +179,17 @@ Drag.prototype.resetResizeStyling =
     this.target.removeClass("resizable-bottom");
     this.target.removeClass("resizable-left");
     this.target.removeClass("resizable-right");
+  };
+
+Drag.prototype.beforeResizing =
+  function beforeResizing (x, y)
+  {
+    var resizeDir = this.inResizeBorder(x, y);
+    this.resetResizeStyling();
+    if (resizeDir.left  ) this.target.addClass("resizable-left");
+    if (resizeDir.right ) this.target.addClass("resizable-right");
+    if (resizeDir.top   ) this.target.addClass("resizable-top");
+    if (resizeDir.bottom) this.target.addClass("resizable-bottom");
   };
 
 Drag.prototype.startResizing =
