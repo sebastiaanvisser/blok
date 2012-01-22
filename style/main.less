@@ -4,6 +4,7 @@
   -webkit-box-sizing: border-box;
 
   -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease;
+  .resizable();
 }
 
 .container
@@ -33,23 +34,6 @@
 {
   background: rgba(255,255,255, 0.6);
 }
-
-.container, .obstacle, .target, .good, .maybe,
-{
-  border-color: rgba(192,0,255, 0);
-  
-  &.left         { cursor: w-resize; border-left:   solid 8px rgba(192,0,255, 1); background-position: -8px 0px; }
-  &.right        { cursor: e-resize; border-right:  solid 8px rgba(192,0,255, 1); }
-  &.top          { cursor: n-resize; border-top:    solid 8px rgba(192,0,255, 1); background-position: 0px -8px; }
-  &.bottom       { cursor: s-resize; border-bottom: solid 8px rgba(192,0,255, 1); }
-  &.top.left     { cursor: nw-resize; background-position: -8px -8px; }
-  &.top.right    { cursor: ne-resize; }
-  &.bottom.left  { cursor: sw-resize; }
-  &.bottom.right { cursor: se-resize; }
-}
-
-
-
 
 
 
