@@ -7,9 +7,17 @@ Class
     window.g = @group
 
     $(document).ready =>
-      @group.addContainer t for t in $(".container").get()
-      @group.addObstacle  t for t in $(".obstacle").get()
-      @group.addTarget    t for t in $(".target").get()
+
+      c = new Drag $(".container")[0]
+      t = new Drag $(".target")[0]
+
+      t.onDragAlign   = Constraint.dragSolver [], []
+      t.stopDragAlign = Constraint.grid 24, 24
+
+      # @group.addContainer t for t in $(".container").get()
+      # @group.addObstacle  t for t in $(".obstacle").get()
+      # @group.addTarget    t for t in $(".target").get()
+
       @setupUI()
 
   setupUI: () ->

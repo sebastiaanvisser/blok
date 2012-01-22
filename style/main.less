@@ -3,13 +3,14 @@
   position: absolute;
   -webkit-box-sizing: border-box;
 
-  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease; // , border-color 1s ease;
+  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
 
 .container
 {
   background-image: url("images/checker.svg");
   -webkit-box-shadow: inset 0 0 10px rgba(0,0,0, 0.2);
+  overflow: hidden;
 }
 
 .obstacle
@@ -20,23 +21,10 @@
   cursor: move;
 }
 
-.good
-{
-  background: -webkit-linear-gradient(top, #8f8, #8f8);
-  xopacity: 0.4;
-}
-
-.maybe
-{
-  background: -webkit-linear-gradient(top, #f88, #f88);
-  xopacity: 0.4;
-}
-
 .target 
 {
-  background: -webkit-linear-gradient(top, #ffffff, #f7f7f7);
-  opacity: 0.9;
-  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+  background: #fafafa;
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.2);
   cursor: move;
 }
 
@@ -58,5 +46,20 @@
 .target.resizing
 {
   background: rgba(255,255,255, 0.8);
+}
+
+
+
+
+
+
+.good
+{
+  background: -webkit-linear-gradient(top, #8f8, #8f8);
+}
+
+.maybe
+{
+  background: -webkit-linear-gradient(top, #f88, #f88);
 }
 
