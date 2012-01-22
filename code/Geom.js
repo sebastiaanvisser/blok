@@ -1,12 +1,22 @@
 function Geom () {}
 
-Geom.fromElement =
-  function fromElement (e)
+Geom.element =
+  function element (e)
   {
     return { x : e.offsetLeft
            , y : e.offsetTop
            , r : e.offsetLeft + e.offsetWidth
            , b : e.offsetTop  + e.offsetHeight
+           };
+  };
+
+Geom.parent =
+  function parent (e)
+  {
+    return { x : 0
+           , y : 0
+           , r : e.parentNode.offsetWidth
+           , b : e.parentNode.offsetHeight
            };
   };
 
@@ -37,4 +47,16 @@ Geom.setX = function setX (g, x) { return Util.set("x", x)(g); };
 Geom.setY = function setY (g, y) { return Util.set("y", y)(g); };
 Geom.setR = function setR (g, r) { return Util.set("r", r)(g); };
 Geom.setB = function setB (g, b) { return Util.set("b", b)(g); };
+
+Geom.sortByDistance =
+  function sortByDistance (g, xs)
+  {
+    return xs.sort(
+      function (a, b)
+      {
+        a.distance = Geom.distance(a, g);
+        b.distance = Geom.distance(b, g);
+        return a.distance - b.distance;
+      });
+  };
 

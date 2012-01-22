@@ -7,16 +7,8 @@
 <!--#include virtual="code/Util.js"       -->
 <!--#include virtual="code/Geom.js"       -->
 <!--#include virtual="code/Drag.js"       -->
-<!--#include virtual="code/Constraint.js" -->
+<!--#include virtual="code/Solver.js"     -->
+<!--#include virtual="code/Dsl.js"        -->
 <!--#include virtual="code/Group.js"      -->
-
-// CoffeeScript utilities.
-var __slice = Array.prototype.slice
-var __bind = function (fn, me) { return function bind () { return fn.apply(me, arguments); }; };
-
-// Generated JavaScript.
-<!--#exec cmd="./compiler/compile.sh server" -->
-
-// Start application.
-__Main()
+<!--#include virtual="code/Main.js"      -->
 

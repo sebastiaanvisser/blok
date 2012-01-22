@@ -79,7 +79,7 @@ Drag.prototype.mousedown =
   {
     var r = this.inResizeBorder(e.clientX, e.clientY);
     var i = r.left || r.right || r.top || r.bottom;
-    this.target.parent().append(this.target);
+    // this.target.parent().append(this.target);
     if ( i && this.allowResizing) this.startResizing(e.clientX, e.clientY, r);
     if (!i && this.allowDragging) this.startDragging(e.clientX, e.clientY);
     return false;
@@ -127,7 +127,7 @@ Drag.prototype.startDragging =
     this.target.addClass("dragging");
     this.turnOffTransitions();
     this.dragOrigin = { x : x, y : y };
-    this.origin = Geom.fromElement(this.target[0]);
+    this.origin = Geom.element(this.target[0]);
     this.drag(x, y);
   };
 
@@ -168,7 +168,7 @@ Drag.prototype.inResizeBorder =
   function inResizeBorder (x, y)
   {
     var m = this.resizeMargin;
-    var e = Geom.fromElement(this.target[0]);
+    var e = Geom.element(this.target[0]);
     return { left   : Math.abs(e.x - x) <= m
            , right  : Math.abs(e.r - x) <= m
            , top    : Math.abs(e.y - y) <= m
@@ -193,7 +193,7 @@ Drag.prototype.startResizing =
     this.turnOffTransitions();
     this.resizeDir = r;
     this.resizeOrigin = { x : x, y : y };
-    this.origin = Geom.fromElement(this.target[0]);
+    this.origin = Geom.element(this.target[0]);
     this.resize(x, y);
   };
 

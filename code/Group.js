@@ -53,9 +53,9 @@ Group.prototype.serialize =
 Group.prototype.rebuildSolvers =
   function rebuildSolvers ()
   {
-    var grid   = Constraint.grid(24, 24);
-    var strech = function (s) { return Constraint.strech(0.8, s); };
-    var resize = strech(Constraint.bounded(24 * 4, 24 * 4));
+    var grid   = Dsl.grid(24, 24);
+    var strech = function (s) { return Dsl.strech(0.8, s); };
+    var resize = strech(Dsl.bounded(24 * 4, 24 * 4));
 
     this.draggers.containers.forEach
       (function (t)
@@ -63,7 +63,7 @@ Group.prototype.rebuildSolvers =
          t.stopDragAlign   = grid;
          t.stopResizeAlign = grid;
          t.onResizeAlign   = resize;
-         t.stopResizeAlign = Constraint.compose(grid, resize);
+         t.stopResizeAlign = Dsl.compose(grid, resize);
        });
 
     this.draggers.obstacles.forEach
@@ -72,7 +72,7 @@ Group.prototype.rebuildSolvers =
          t.stopDragAlign   = grid;
          t.stopResizeAlign = grid;
          t.onResizeAlign   = resize;
-         t.stopResizeAlign = Constraint.compose(grid, resize);
+         t.stopResizeAlign = Dsl.compose(grid, resize);
        });
 
     var elems = this.elems;
@@ -82,25 +82,25 @@ Group.prototype.rebuildSolvers =
          var others = elems.targets.filter(function (u) { return u !== t.target[0]; });
 
          var dragSolver =
-           Constraint.orOrigin
-             (Constraint.dragSolver
+           Dsl.orOrigin
+             (Dsl.dragSolver
                ( elems.containers
                , elems.obstacles.concat(others)
                ));
 
          var resizeSolver =
-           Constraint.orOrigin
-             (Constraint.resizeSolver
+           Dsl.orOrigin
+             (Dsl.resizeSolver
                ( elems.containers
                , elems.obstacles.concat(others)
                ));
 
-         var bound           = Constraint.bounded(24, 24);
-         var resize          = Constraint.compose(resizeSolver, bound);
+         var bound           = Dsl.bounded(24, 24);
+         var resize          = Dsl.compose(resizeSolver, bound);
          var onDragAlign     = strech(dragSolver);
-         var stopDragAlign   = Constraint.compose(grid, dragSolver);
+         var stopDragAlign   = Dsl.compose(grid, dragSolver);
          var onResizeAlign   = strech(resize);
-         var stopResizeAlign = Constraint.compose(grid, resize);
+         var stopResizeAlign = Dsl.compose(grid, resize);
 
          t.onDragAlign     = onDragAlign;
          t.stopDragAlign   = stopDragAlign;

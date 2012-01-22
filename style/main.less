@@ -13,7 +13,7 @@
   overflow: hidden;
 }
 
-.obstacle
+.target
 {
   background-image: url("images/stripes.svg"), -webkit-linear-gradient(top, #fb0, #f80);
   xopacity: 0.85;
@@ -21,11 +21,17 @@
   cursor: move;
 }
 
-.target 
+.obstacle 
 {
   background: #fafafa;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.2);
   cursor: move;
+}
+
+.obstacle.dragging,
+.obstacle.resizing
+{
+  background: rgba(255,255,255, 0.6);
 }
 
 .container, .obstacle, .target, .good, .maybe,
@@ -40,12 +46,6 @@
   &.top.right    { cursor: ne-resize; }
   &.bottom.left  { cursor: sw-resize; }
   &.bottom.right { cursor: se-resize; }
-}
-
-.target.dragging,
-.target.resizing
-{
-  background: rgba(255,255,255, 0.8);
 }
 
 
