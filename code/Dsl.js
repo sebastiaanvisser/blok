@@ -42,6 +42,15 @@ Dsl.orCurrent =
     };
   };
 
+Dsl.margin =
+  function margin (m, a)
+  {
+    return function (g, o)
+    {
+      return Geom.shrink(a(Geom.grow(g, m), o), m);
+    }
+  }
+
 Dsl.strech =
   function strech (n, a)
   {

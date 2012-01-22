@@ -7,6 +7,9 @@ function Adjust (target, pivot)
   this.geom            = {};
   this.initialize();
 
+  this.allowSelecting  = true;
+  this.selected        = false;
+
   this.allowDragging   = true;
   this.dragging        = false;
   this.dragOrigin      = {};
@@ -26,8 +29,10 @@ function Adjust (target, pivot)
   this.pivot.mousedown       (this.mousedown.scope(this));
   this.pivot.mousemove       (this.hovering.scope(this));
   this.pivot.mouseout        (this.mouseout.scope(this));
+  this.pivot.click           (this.click.scope(this));
   $(document.body).mouseup   (this.mouseup.scope(this));
   $(document.body).mousemove (this.mousemove.scope(this));
+  $(document.body).click     (this.bodyClick.scope(this));
 }
 
 // ----------------------------------------------------------------------------
@@ -40,7 +45,7 @@ Adjust.prototype.hovering =
   };
 
 Adjust.prototype.mouseout =
-  function mousedown (e)
+  function mouseout (e)
   {
     if (!this.resizing) this.resetResizeStyling();
     return false;
@@ -55,6 +60,19 @@ Adjust.prototype.mousedown =
     if ( i && this.allowResizing) this.startResizing(e.clientX, e.clientY, r);
     if (!i && this.allowDragging) this.startDragging(e.clientX, e.clientY);
     return false;
+  };
+
+Adjust.prototype.click =
+  function click (e)
+  {
+    if (this.allowSelecting) this.startSelecting();
+  };
+
+Adjust.prototype.bodyClick =
+  function bodyClick (e)
+  {
+    if (e.target == this.target[0]) return;
+    if (this.allowSelecting) this.stopSelecting();
   };
 
 Adjust.prototype.mouseup =
@@ -110,6 +128,24 @@ Adjust.prototype.restoreTransitions =
   function restoreTransitions ()
   {
     this.target.css("-webkit-transition-property", this.transitions);
+  };
+
+// ----------------------------------------------------------------------------
+// SELECTING
+// ----------------------------------------------------------------------------
+
+Adjust.prototype.startSelecting =
+  function startSelecting ()
+  {
+    this.selected = true;
+    this.target.addClass("selected");
+  };
+
+Adjust.prototype.stopSelecting =
+  function stopSelecting ()
+  {
+    this.selected = false;
+    this.target.removeClass("selected");
   };
 
 // ----------------------------------------------------------------------------

@@ -52,6 +52,28 @@ Geom.intersect =
     return (c.r - c.x <= 0 || c.b - c.y <= 0) ? null : c;
   };
 
+Geom.grow =
+  function grow (a, m)
+  {
+    var c = Util.copy(a);
+    c.x = a.x - m;
+    c.y = a.y - m;
+    c.r = a.r + m;
+    c.b = a.b + m;
+    return c;
+  };
+
+Geom.shrink =
+  function shrink (a, m)
+  {
+    var c = Util.copy(a);
+    c.x = a.x + m;
+    c.y = a.y + m;
+    c.r = a.r - m;
+    c.b = a.b - m;
+    return c;
+  };
+
 Geom.contained =
   function contained (a, b)
   {
