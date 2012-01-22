@@ -1,20 +1,21 @@
 .content
 {
-  background: white;
+  background: url("images/checker.svg"), white;
   -webkit-box-shadow: none;
-  padding: 24px;
-  width: 24px * 26;
   margin: 0 auto 0 auto;
+  width: 24px * 26;
   line-height: 24px;
   font-size: 18px;
+  position: relative;
+  overflow: hidden;
+
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.2);
 
   *
   {
-    margin: 0;
     padding: 0;
+    position: relative;
   }
-
-  // h1, h2, p { background: rgba(255,255,0, 0.15); } 
 
   h1
   {
@@ -25,11 +26,8 @@
   h1, h2, p
   {
     margin-bottom: 24px;
-  }
-
-  p:focus
-  {
-    background: yellow;
+    background: rgba(255,255,0, 0.3);
+    .resizable();
   }
 
 }

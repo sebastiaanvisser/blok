@@ -6,14 +6,14 @@
 
 <body>
 
-  <button id=new-container>container</button><br>
-  <button id=new-obstacle>obstacle</button><br>
-  <button id=new-target>target</button><br>
+  <div style=position:fixed>
+    <button id=new-container>container</button><br>
+    <button id=new-obstacle>obstacle</button><br>
+    <button id=new-target>target</button><br>
+  </div>
 
-  <div data-geom="4 4 22 22" id=c0 class=container>
-    <div data-geom=" 0 0 4   4" id=t0 class=target></div>
-    <div data-geom=" 0 6 4  10" id=o0 class=obstacle></div>
-    <div data-geom="12 6 16 10" id=o1 class=obstacle></div>
+  <div class="content" contenteditable=true>
+  <!--#include virtual="html/content.html" -->
   </div>
 
 </body>

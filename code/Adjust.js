@@ -96,25 +96,36 @@ Adjust.prototype.mousemove =
 Adjust.prototype.initialize =
   function initialize ()
   {
-    var g = this
-      .target
-      .attr("data-geom")
-      .split(/\s+/)
-      .filter(function (n) { return !n.match(/^\s*$/); })
-      .map(function (n) { return n * 24; });
+    var g = this.target.attr("data-geom");
 
-    this.target.addClass("draggable");
-    this.geom = { x : g[0], y : g[1], r : g[2], b : g[3] };
-    this.render();
+    if (g)
+    {
+      var g = g.split(/\s+/)
+               .filter(function (n) { return !n.match(/^\s*$/); })
+               .map(function (n) { return n * 24; });
+      this.geom = { x : g[0], y : g[1], r : g[2], b : g[3] };
+      this.render();
+    }
+    else
+      this.geom = Geom.relativeEl(this.target[0]);
   };
 
 Adjust.prototype.render =
   function render ()
   {
-    this.target.css("left",    this.geom.x                + "px");
-    this.target.css("top",     this.geom.y                + "px");
-    this.target.css("width",  (this.geom.r - this.geom.x) + "px");
-    this.target.css("height", (this.geom.b - this.geom.y) + "px");
+    if (this.target.css("position") == "absolute")
+    {
+      this.target.css("left",    this.geom.x                + "px");
+      this.target.css("top",     this.geom.y                + "px");
+      this.target.css("width",  (this.geom.r - this.geom.x) + "px");
+      this.target.css("height", (this.geom.b - this.geom.y) + "px");
+    }
+    else
+    {
+      this.target.css("left", this.geom.x                + "px");
+      this.target.css("max-width",  (this.geom.r - this.geom.x) + "px");
+      this.target.css("min-height", (this.geom.b - this.geom.y) + "px");
+    }
   };
 
 Adjust.prototype.turnOffTransitions =
