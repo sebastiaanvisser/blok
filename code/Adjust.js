@@ -3,6 +3,8 @@ function Adjust (target, pivot)
   this.target          = $(target);
   this.pivot           = $(pivot || target);
 
+  this.target[0].__adjust = this;
+
   this.origin          = {};
   this.geom            = {};
   this.initialize();
@@ -14,15 +16,14 @@ function Adjust (target, pivot)
   this.dragging        = false;
   this.dragOrigin      = {};
   this.moveToTop       = false;
+  this.onDragAlign     = function (g) { return g; }
+  this.stopDragAlign   = function (g) { return g; }
 
   this.allowResizing   = true;
   this.resizeMargin    = 8;
   this.resizeDir       = null;
   this.resizing        = false;
   this.resizeOrigin    = {};
-
-  this.onDragAlign     = function (g) { return g; }
-  this.stopDragAlign   = function (g) { return g; }
   this.onResizeAlign   = function (g) { return g; }
   this.stopResizeAlign = function (g) { return g; }
 
@@ -33,6 +34,8 @@ function Adjust (target, pivot)
   $(document.body).mouseup   (this.mouseup.scope(this));
   $(document.body).mousemove (this.mousemove.scope(this));
   $(document.body).click     (this.bodyClick.scope(this));
+
+  this.beforeDragging();
 }
 
 // ----------------------------------------------------------------------------
@@ -163,6 +166,13 @@ Adjust.prototype.stopSelecting =
 // DRAGGING
 // ----------------------------------------------------------------------------
 
+Adjust.prototype.beforeDragging =
+  function beforeDragging ()
+  {
+    if (!this.allowDragging) return;
+    this.target.addClass("draggable");
+  };
+
 Adjust.prototype.startDragging =
   function startDragging (x, y)
   {
@@ -203,9 +213,10 @@ Adjust.prototype.drag =
     this.render();
   };
 
-Drag.prototype.touch =
+Adjust.prototype.touch =
   function touch ()
   {
+    this.origin = Geom.relativeEl(this.target[0]);
     this.geom = this.stopDragAlign(this.geom, this.origin);
     this.render();
   };

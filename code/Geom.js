@@ -17,7 +17,7 @@ Geom.absoluteEl =
       , y = e.offsetTop;
 
     var cur = e;
-    while (cur.parentNode != document.body)
+    while (cur != document.body)
     {
       cur = cur.parentNode;
       x += cur.offsetLeft - cur.scrollLeft;
