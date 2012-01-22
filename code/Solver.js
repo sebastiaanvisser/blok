@@ -41,20 +41,6 @@ Solver.outside =
 
 // ----------------------------------------------------------------------------
 
-Solver.debugElem =
-  function debugElemElem (v)
-  {
-    return function (g)
-    {
-      var e = $("<div class='debug " + v + "'></div>");
-      $("#debug").append(e);
-      $(e).css("left",   g.x + "px");
-      $(e).css("top",    g.y + "px");
-      $(e).css("width",  (g.r - g.x) + "px");
-      $(e).css("height", (g.b - g.y) + "px");
-    };
-  };
-
 Solver.serialize =
   function serialize (g)
   {
@@ -94,12 +80,6 @@ Solver.drag1 =
         , maybe : Util.concat(blocking.map(function (b) { return b.maybe; }))
         };
 
-      if (Solver.debug)
-      {
-        options.good.forEach(Solver.debugElem("good"));
-        options.maybe.forEach(Solver.debugElem("maybe"));
-      }
-
       options.good.forEach  (function (o) { done[Solver.serialize(o)] = true; });
       options.maybe.forEach (function (o) { done[Solver.serialize(o)] = true; });
     }
@@ -112,7 +92,6 @@ Solver.drag =
   {
     return function (g)
     {
-      if (Solver.debug) $("#debug *").remove();
       var options = Util.concat(containers.map
         (function (cont)
          {
