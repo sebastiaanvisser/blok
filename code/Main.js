@@ -1,9 +1,11 @@
 function start ()
 {
+  var mode = new Mode;
+
   $("h1, h2, p").each
     ( function (_, el)
       {
-        var a = new Adjust(el);
+        var a = new Adjust(el, el, mode);
 
         var dragSolver = Dsl.orOrigin
           ( Dsl.dragSolver

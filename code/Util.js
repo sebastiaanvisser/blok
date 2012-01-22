@@ -7,6 +7,8 @@ Function.prototype.scope =
 
 function Util () {}
 
+Util.id = function id (a) { return a; };
+
 Util.copy =
   function copy (o)
   {

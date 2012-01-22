@@ -1,7 +1,26 @@
-function Adjust (target, pivot)
+function Mode ()
+{
+  this.adjusting = false;
+  $(document.body).keypress(this.keypress.scope(this));
+}
+
+Mode.prototype.keypress =
+  function keypress (e)
+  {
+    if (e.keyCode == 101 && e.metaKey)
+    {
+      this.adjusting = !this.adjusting;
+      $(document.body).toggleClass("adjusting");
+    }
+  };
+
+// ----------------------------------------------------------------------------
+
+function Adjust (target, pivot, mode)
 {
   this.target          = $(target);
   this.pivot           = $(pivot || target);
+  this.mode            = mode;
 
   this.target[0].__adjust = this;
 
@@ -16,29 +35,39 @@ function Adjust (target, pivot)
   this.dragging        = false;
   this.dragOrigin      = {};
   this.moveToTop       = false;
-  this.onDragAlign     = function (g) { return g; }
-  this.stopDragAlign   = function (g) { return g; }
+  this.onDragAlign     = Util.id
+  this.stopDragAlign   = Util.id
 
   this.allowResizing   = true;
   this.resizeMargin    = 8;
   this.resizeDir       = null;
   this.resizing        = false;
   this.resizeOrigin    = {};
-  this.onResizeAlign   = function (g) { return g; }
-  this.stopResizeAlign = function (g) { return g; }
+  this.onResizeAlign   = Util.id
+  this.stopResizeAlign = Util.id
 
-  this.pivot.mousedown       (this.mousedown.scope(this));
-  this.pivot.mousemove       (this.hovering.scope(this));
-  this.pivot.mouseout        (this.mouseout.scope(this));
-  this.pivot.click           (this.click.scope(this));
-  $(document.body).mouseup   (this.mouseup.scope(this));
-  $(document.body).mousemove (this.mousemove.scope(this));
-  $(document.body).click     (this.bodyClick.scope(this));
+  this.pivot.mousedown       (this.whenAdjusting(this.mousedown.scope(this)));
+  this.pivot.mousemove       (this.whenAdjusting(this.hovering.scope(this)));
+  this.pivot.mouseout        (this.whenAdjusting(this.mouseout.scope(this)));
+  this.pivot.click           (this.whenAdjusting(this.click.scope(this)));
+  $(document.body).mouseup   (this.whenAdjusting(this.mouseup.scope(this)));
+  $(document.body).mousemove (this.whenAdjusting(this.mousemove.scope(this)));
+  $(document.body).click     (this.whenAdjusting(this.bodyClick.scope(this)));
 
   this.beforeDragging();
 }
 
 // ----------------------------------------------------------------------------
+
+Adjust.prototype.whenAdjusting =
+  function whenAdjusting (f)
+  {
+    return function whenAdjusting (e)
+    {
+      if (this.mode.adjusting)
+        return f.call(this, e);
+    }.scope(this);
+  };
 
 Adjust.prototype.hovering =
   function hovering (e)

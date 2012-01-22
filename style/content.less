@@ -1,6 +1,5 @@
 .content
 {
-  background: url("images/checker.svg"), white;
   -webkit-box-shadow: none;
   margin: 0 auto 0 auto;
   width: 24px * 26;
@@ -28,7 +27,18 @@
   h1, h2, p
   {
     margin-bottom: 24px;
-    background: rgba(255,255,0, 0.3);
+  }
+
+}
+
+body.adjusting .content
+{
+  background: url("images/checker.svg"), white;
+
+  h1, h2, p
+  {
+    background: rgba(255,255,0, 0.1);
+    .draggable();
     .resizable();
   }
 
