@@ -1,4 +1,4 @@
-function Drag (target, pivot)
+function Adjust (target, pivot)
 {
   this.target          = $(target);
   this.pivot           = $(pivot || target);
@@ -32,21 +32,21 @@ function Drag (target, pivot)
 
 // ----------------------------------------------------------------------------
 
-Drag.prototype.hovering =
+Adjust.prototype.hovering =
   function hovering (e)
   {
     if (this.dragging || this.resizing) return;
     this.beforeResizing(e.clientX, e.clientY);
   };
 
-Drag.prototype.mouseout =
+Adjust.prototype.mouseout =
   function mousedown (e)
   {
     if (!this.resizing) this.resetResizeStyling();
     return false;
   };
 
-Drag.prototype.mousedown =
+Adjust.prototype.mousedown =
   function mousedown (e)
   {
     var r = this.inResizeBorder(e.clientX, e.clientY);
@@ -57,7 +57,7 @@ Drag.prototype.mousedown =
     return false;
   };
 
-Drag.prototype.mouseup =
+Adjust.prototype.mouseup =
   function mouseup (e)
   {
     if (this.dragging) this.stopDragging(e);
@@ -65,7 +65,7 @@ Drag.prototype.mouseup =
     return false;
   };
 
-Drag.prototype.mousemove =
+Adjust.prototype.mousemove =
   function mousemove (e)
   {
     if (this.dragging) this.drag(e.clientX, e.clientY);
@@ -75,7 +75,7 @@ Drag.prototype.mousemove =
 
 // ----------------------------------------------------------------------------
 
-Drag.prototype.initialize =
+Adjust.prototype.initialize =
   function initialize ()
   {
     var g = this
@@ -90,7 +90,7 @@ Drag.prototype.initialize =
     this.render();
   };
 
-Drag.prototype.render =
+Adjust.prototype.render =
   function render ()
   {
     this.target.css("left",    this.geom.x                + "px");
@@ -99,14 +99,14 @@ Drag.prototype.render =
     this.target.css("height", (this.geom.b - this.geom.y) + "px");
   };
 
-Drag.prototype.turnOffTransitions =
+Adjust.prototype.turnOffTransitions =
   function turnOffTransitions ()
   {
     this.transitions = this.target.css("-webkit-transition-property");
     this.target.css("-webkit-transition-property", "none");
   };
 
-Drag.prototype.restoreTransitions =
+Adjust.prototype.restoreTransitions =
   function restoreTransitions ()
   {
     this.target.css("-webkit-transition-property", this.transitions);
@@ -116,7 +116,7 @@ Drag.prototype.restoreTransitions =
 // DRAGGING
 // ----------------------------------------------------------------------------
 
-Drag.prototype.startDragging =
+Adjust.prototype.startDragging =
   function startDragging (x, y)
   {
     this.dragging = true;
@@ -127,7 +127,7 @@ Drag.prototype.startDragging =
     this.drag(x, y);
   };
 
-Drag.prototype.stopDragging =
+Adjust.prototype.stopDragging =
   function stopDragging ()
   {
     this.dragging = false;
@@ -137,7 +137,7 @@ Drag.prototype.stopDragging =
     this.render();
   };
 
-Drag.prototype.drag =
+Adjust.prototype.drag =
   function drag (x, y)
   {
     var t  = this.target,
@@ -160,7 +160,7 @@ Drag.prototype.drag =
 // RESIZING
 // ----------------------------------------------------------------------------
 
-Drag.prototype.inResizeBorder =
+Adjust.prototype.inResizeBorder =
   function inResizeBorder (x, y)
   {
     var m = this.resizeMargin;
@@ -172,7 +172,7 @@ Drag.prototype.inResizeBorder =
            };
   };
 
-Drag.prototype.resetResizeStyling =
+Adjust.prototype.resetResizeStyling =
   function resetResizeStyling ()
   {
     this.target.removeClass("resizable-top");
@@ -181,7 +181,7 @@ Drag.prototype.resetResizeStyling =
     this.target.removeClass("resizable-right");
   };
 
-Drag.prototype.beforeResizing =
+Adjust.prototype.beforeResizing =
   function beforeResizing (x, y)
   {
     var resizeDir = this.inResizeBorder(x, y);
@@ -192,7 +192,7 @@ Drag.prototype.beforeResizing =
     if (resizeDir.bottom) this.target.addClass("resizable-bottom");
   };
 
-Drag.prototype.startResizing =
+Adjust.prototype.startResizing =
   function startResizing (x, y, r)
   {
     this.resizing = true;
@@ -204,7 +204,7 @@ Drag.prototype.startResizing =
     this.resize(x, y);
   };
 
-Drag.prototype.stopResizing =
+Adjust.prototype.stopResizing =
   function stopResizing ()
   {
     this.resizing = false;
@@ -215,7 +215,7 @@ Drag.prototype.stopResizing =
     this.render();
   };
 
-Drag.prototype.resize =
+Adjust.prototype.resize =
   function resize (x, y)
   {
     var d  = this.resizeDir;

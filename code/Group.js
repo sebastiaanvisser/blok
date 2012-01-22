@@ -16,7 +16,7 @@ function Group ()
 Group.prototype.addContainer =
   function addContainer (t)
   {
-    var d = new Drag(t, t);
+    var d = new Adjust(t, t);
     this.draggers.containers.push(d);
     this.elems.containers.push(t);
     this.rebuildSolvers();
@@ -25,7 +25,7 @@ Group.prototype.addContainer =
 Group.prototype.addObstacle =
   function addObstacle (t)
   {
-    var d = new Drag(t, t);
+    var d = new Adjust(t, t);
     this.draggers.obstacles.push(d);
     this.elems.obstacles.push(t);
     this.rebuildSolvers();
@@ -34,7 +34,7 @@ Group.prototype.addObstacle =
 Group.prototype.addTarget =
   function addTarget (t)
   {
-    var d = new Drag(t, t);
+    var d = new Adjust(t, t);
     this.draggers.targets.push(d);
     this.elems.targets.push(t);
     this.rebuildSolvers();

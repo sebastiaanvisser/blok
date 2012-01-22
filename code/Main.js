@@ -1,8 +1,8 @@
 function start ()
 {
-  var c0 = new Drag($("#c0")[0]);
-  var t0 = new Drag($("#t0")[0]);
-  var o0 = new Drag($("#o0")[0]);
+  var c0 = new Adjust($("#c0")[0]);
+  var t0 = new Adjust($("#t0")[0]);
+  var o0 = new Adjust($("#o0")[0]);
 
   var dragSolver = Dsl.orOrigin
     ( Dsl.dragSolver
