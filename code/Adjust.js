@@ -154,9 +154,8 @@ Adjust.prototype.render =
     }
     else
     {
-      this.target.css("left", this.geom.x                + "px");
-      this.target.css("max-width",  (this.geom.r - this.geom.x) + "px");
-      this.target.css("min-height", (this.geom.b - this.geom.y) + "px");
+      this.target.css("left",       this.geom.x                + "px");
+      this.target.css("max-width", (this.geom.r - this.geom.x) + "px");
     }
   };
 

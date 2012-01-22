@@ -6,14 +6,12 @@
 
 <body>
 
-  <div style=position:fixed>
-    <button id=new-container>container</button><br>
-    <button id=new-obstacle>obstacle</button><br>
-    <button id=new-target>target</button><br>
-  </div>
+  <header></header>
 
-  <div class="content" contenteditable=true>
-  <!--#include virtual="html/content.html" -->
+  <div id=main>
+    <div id=content contenteditable=true><!--#include virtual="html/content.html" --></div>
+    <div id=magic><!--#include virtual="html/magic.html"   --></div>
+    <div class=target data-geom="0 0 4 4"></div>
   </div>
 
 </body>

@@ -1,39 +1,59 @@
-.content
+#main
 {
-  -webkit-box-shadow: none;
   margin: 0 auto 0 auto;
-  width: 24px * 26;
-  line-height: 24px;
-  font-size: 18px;
+  width: 24px * 35;
   position: relative;
   overflow: hidden;
 
-  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.2);
+  line-height: 24px;
+  font-family: Helvetica;
+  font-size: 14px;
 
-  *
+  & > div
   {
-    padding: 0;
-    position: relative;
-    max-width: 24px * 24;
-    left: 24px;
+    padding: (24px * 4) 0;
+
+    & > *
+    {
+      padding: 0;
+      position: relative;
+      max-width: 24px * 20;
+      left: 24px;
+      margin-bottom: 24px;
+    }
+
+    h1, h2
+    {
+      margin-top: 0;
+      line-height: 48px;
+      font-family: Baskerville, Georgia;
+      font-weight: normal;
+    }
+
   }
 
-  h1
+  #content
   {
-    margin-top: 24px;
-    line-height: 48px;
+    width: 24px * 22;
   }
 
-  h1, h2, p
+  #magic
   {
-    margin-bottom: 24px;
+    left: 24px * 22;
+    top: 24px * 4;
+    width: 24px * 12;
+    min-height: 24px * 12;
+    position: absolute;
   }
 
 }
 
-body.adjusting .content
+body.adjusting #main
 {
   background: url("images/checker.svg"), white;
+  -webkit-box-shadow: 0 0 400px rgba(0,0,0, 0.1);
+
+  #magic  { background: rgba(255,255,0, 0.1); }
 
   h1, h2, p
   {
