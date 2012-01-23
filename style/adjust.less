@@ -1,20 +1,4 @@
-.selected
-{
-  outline: dashed 2px rgba(0,100,255, 0.4);
-}
-
-.draggable()
-{
-  &.draggable { cursor: move; }
-}
-
-.dragging
-{
-  opacity: 0.8;
-}
-
-.draggable,
-.resizable
+.geomAnimation ()
 {
   -webkit-transition: left       0.2s ease
                     , top        0.2s ease
@@ -22,6 +6,17 @@
                     , height     0.2s ease
                     , max-width  0.2s ease
                     , min-height 0.2s ease;
+}
+
+.selectable ()
+{
+  &.selected { outline: dashed 2px rgba(0,100,255, 0.4); }
+}
+
+.draggable()
+{
+  &.draggable { cursor: move; }
+  &.dragging  { opacity: 0.8; }
 }
 
 .resizable ()
@@ -34,5 +29,13 @@
   &.resizable-top.resizable-right    { cursor: ne-resize; }
   &.resizable-bottom.resizable-left  { cursor: sw-resize; }
   &.resizable-bottom.resizable-right { cursor: se-resize; }
+}
+
+.adjustable ()
+{
+  .geomAnimation();
+  .selectable();
+  .draggable();
+  .resizable();
 }
 
