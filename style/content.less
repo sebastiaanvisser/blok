@@ -5,7 +5,7 @@
   margin: 0 auto 0 auto;
 
   line-height: 24px;
-  font-family: Helvetica;
+  font-family: Georgia;
   font-size: 14px;
 
   & > div
@@ -26,6 +26,11 @@
       line-height: 48px;
       font-family: Baskerville, Georgia;
       font-weight: normal;
+    }
+
+    p
+    {
+      text-align: justify;
     }
 
   }
@@ -65,9 +70,7 @@ body.adjusting #main
   h1, h2, p
   {
     background: white;
-    .selectable();
-    .draggable();
-    .resizable();
+    .adjustable();
   }
 
 }

@@ -15,7 +15,11 @@
 
 .draggable()
 {
-  &.draggable { cursor: move; }
+  &.draggable
+  {
+    cursor: move;
+    outline: dashed 2px rgba(0,100,255, 0.4);
+  }
   &.dragging  { opacity: 0.8; }
 }
 

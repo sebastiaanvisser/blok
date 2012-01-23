@@ -1,3 +1,16 @@
+.box()
+{
+  position: absolute;
+  -webkit-box-sizing: border-box;
+}
+
+.shadow (@v: 0.04)
+{
+  -webkit-box-shadow: 0px 0px 20px rgba(0,0,0, @v);
+}
+
+// ----------------------------------------------------------------------------
+
 html, body
 {
   background: #fafafa;
@@ -14,3 +27,4 @@ html, body
 @import "adjust.less";
 @import "content.less";
 @import "main.less";
+
