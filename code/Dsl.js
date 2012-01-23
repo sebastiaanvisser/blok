@@ -9,6 +9,7 @@ Dsl.grid =
              , y : Math.round(g.y / h) * h
              , r : Math.round(g.r / w) * w
              , b : Math.round(g.b / h) * h
+             , d : g.d
              };
     };
   };
@@ -53,7 +54,7 @@ Dsl.orCurrent =
 Dsl.margin =
   function margin (m, a)
   {
-    return function (g, o)
+    return function margin (g, o)
     {
       return Geom.shrink(a(Geom.grow(g, m), o), m);
     }
@@ -83,7 +84,7 @@ Dsl.strech =
 Dsl.bounded =
   function bounded (minx, miny, maxx, maxy)
   {
-    return function (g)
+    return function bounded (g)
     {
       var dw = g.r - g.x
       var dh = g.b - g.y
