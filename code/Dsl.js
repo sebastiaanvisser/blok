@@ -13,6 +13,14 @@ Dsl.grid =
     };
   };
 
+Dsl.selector =
+  function selector (sel, p, skip)
+  {
+    return $(sel).get()
+                 .filter(function (n) { return skip.indexOf(n) == -1; })
+                 .map(function (n) { return Geom.absoluteEl(n, p); });
+  };
+
 Dsl.compose =
   function compose (a, b)
   {

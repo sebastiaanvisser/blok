@@ -1,9 +1,8 @@
 #main
 {
-  margin: 0 auto 0 auto;
-  width: 24px * 35;
   position: relative;
-  overflow: hidden;
+  width: 24px * 40;
+  margin: 0 auto 0 auto;
 
   line-height: 24px;
   font-family: Helvetica;
@@ -11,14 +10,13 @@
 
   & > div
   {
-    padding: (24px * 4) 0;
+    padding: (24px * 2) 0;
 
     & > *
     {
       padding: 0;
       position: relative;
       max-width: 24px * 20;
-      left: 24px;
       margin-bottom: 24px;
     }
 
@@ -32,16 +30,27 @@
 
   }
 
+  #navigation
+  {
+    left: 24px * 1;
+    top: 24px * 2;
+    width: 24px * 6;
+    min-height: 24px * 12;
+    position: absolute;
+  }
+
   #content
   {
-    width: 24px * 22;
+    left: 24px * 8;
+    width: 24px * 20;
+    position: relative;
   }
 
   #magic
   {
-    left: 24px * 22;
-    top: 24px * 4;
-    width: 24px * 12;
+    left: 24px * 29;
+    top: 24px * 2;
+    width: 24px * 10;
     min-height: 24px * 12;
     position: absolute;
   }
@@ -53,11 +62,9 @@ body.adjusting #main
   background: url("images/checker.svg"), white;
   -webkit-box-shadow: 0 0 400px rgba(0,0,0, 0.1);
 
-  #magic  { background: rgba(255,255,0, 0.1); }
-
   h1, h2, p
   {
-    background: rgba(255,255,0, 0.1);
+    background: white;
     .draggable();
     .resizable();
   }

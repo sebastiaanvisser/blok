@@ -92,11 +92,10 @@ Solver.drag =
   {
     return function (g)
     {
-      var options = Util.concat(containers.map
-        (function (cont)
+      var options = Util.concat(containers().map
+        (function (c)
          {
-           var c  = cont();
-           var os = Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(), c); }));
+           var os = Util.notNull(obstacles().map(function (o) { return Geom.intersect(o, c); }));
            return Solver.drag1(c, g, os);
          }));
 
@@ -113,8 +112,7 @@ Solver.resize =
       var x, y, r, b, i, o;
 
       i = Util.notNull(Util.concat
-            ( containers
-            . map(function (c) { return Geom.intersect(c(), g); })
+            ( containers().map(function (c) { return Geom.intersect(c, g); })
             ));
 
       if (g.d.left)   o = i.sort(function (a, b) { return b.r - a.r; })[0];
@@ -124,7 +122,7 @@ Solver.resize =
 
       function blocking (region)
       {
-        return Util.notNull(obstacles.map(function (o) { return Geom.intersect(o(), region); }));
+        return Util.notNull(obstacles().map(function (o) { return Geom.intersect(o, region); }));
       }
 
       if (g.d.left)   x = blocking(Geom.setX(o, -Infinity)).sort(function (a, b) { return b.r - a.r; })[0];
