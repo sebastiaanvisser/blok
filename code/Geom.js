@@ -11,7 +11,7 @@ Geom.relativeEl =
   };
 
 Geom.absoluteEl =
-  function absoluteEl (e, p)
+  function absoluteEl (e, p, s)
   {
     var x = e.offsetLeft
       , y = e.offsetTop;
@@ -21,8 +21,8 @@ Geom.absoluteEl =
     {
       cur = cur.parentNode;
       if (cur == p) break;
-      x += cur.offsetLeft - cur.scrollLeft;
-      y += cur.offsetTop - cur.scrollTop;
+      x += cur.offsetLeft - (s ? cur.scrollLeft : 0);
+      y += cur.offsetTop  - (s ? cur.scrollTop  : 0);
     }
 
     return { x : x

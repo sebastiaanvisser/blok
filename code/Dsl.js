@@ -19,7 +19,7 @@ Dsl.selector =
   {
     return $(sel).get()
                  .filter(function (n) { return skip.indexOf(n) == -1; })
-                 .map(function (n) { return Geom.absoluteEl(n, p); });
+                 .map(function (n) { return Geom.absoluteEl(n, p, true); });
   };
 
 Dsl.compose =

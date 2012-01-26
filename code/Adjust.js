@@ -257,7 +257,7 @@ Adjust.prototype.inResizeBorder =
   function inResizeBorder (x, y)
   {
     var m = this.resizeMargin;
-    var e = Geom.absoluteEl(this.target[0]);
+    var e = Geom.absoluteEl(this.target[0], undefined, true);
     return { left   : Math.abs(e.x - x) <= m
            , right  : Math.abs(e.r - x) <= m
            , top    : Math.abs(e.y - y) <= m
