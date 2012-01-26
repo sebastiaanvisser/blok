@@ -1,5 +1,6 @@
 function start ()
 {
+  window.vp = new Viewport("body", "#content > *", "#main");
   var mode = new Mode;
 
   $("h1, h2, p").each
