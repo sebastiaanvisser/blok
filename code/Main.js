@@ -1,7 +1,9 @@
 function start ()
 {
-  window.vp = new Viewport("body", "#content > *", "#main");
+  window.vp = new Viewport("body", ".widget, #content > *", "#main");
   var mode = new Mode;
+
+  var content = $("#content")[0];
 
   $("h1, h2, p").each
     ( function (_, el)
@@ -42,8 +44,8 @@ function start ()
           var drag =
             orOrigin
               ( dragSolver
-                ( function () { return [Geom.parentEl(el)]; }
-                , function () { return Dsl.selector("h1, h2, p, .widget", el.parentNode, [el]); }
+                  ( function () { return [Geom.parentEl(el)]; }
+                , function () { return Dsl.fromList(window.vp.middle, el.parentNode, [el]); }
                 )
               );
 
@@ -52,7 +54,7 @@ function start ()
               ( orOrigin
                 ( resizeSolver
                   ( function () { return [Geom.parentEl(el)]; }
-                  , function () { return Dsl.selector("h1, h2, p, .widget", el.parentNode, [el]); }
+                  , function () { return Dsl.fromList(window.vp.middle, el.parentNode, [el]); }
                   )
                 )
               , bounded(24 * 8, 24 * 6)
@@ -65,6 +67,8 @@ function start ()
         }
       }
     );
+
+  vp.compute();
 }
 
 $(document).ready(start);

@@ -14,12 +14,17 @@ Dsl.grid =
     };
   };
 
+Dsl.fromList =
+  function fromList (list, p, skip)
+  {
+    return list.filter(function (n) { return skip.indexOf(n) == -1; })
+                .map(function (n) { return Geom.absoluteEl(n, p, true); });
+  };
+
 Dsl.selector =
   function selector (sel, p, skip)
   {
-    return $(sel).get()
-                 .filter(function (n) { return skip.indexOf(n) == -1; })
-                 .map(function (n) { return Geom.absoluteEl(n, p, true); });
+    return fromList($(sel).get(), p, skip);
   };
 
 Dsl.compose =
