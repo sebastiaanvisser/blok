@@ -4,14 +4,17 @@ function Mode ()
   $(document.body).keypress(this.keypress.scope(this));
 }
 
+Mode.prototype.toggle =
+  function toggle ()
+  {
+    this.adjusting = !this.adjusting;
+    $(document.body).toggleClass("adjusting");
+  };
+
 Mode.prototype.keypress =
   function keypress (e)
   {
-    if (e.keyCode == 101 && e.metaKey)
-    {
-      this.adjusting = !this.adjusting;
-      $(document.body).toggleClass("adjusting");
-    }
+    if (e.keyCode == 101 && e.metaKey) this.toggle();
   };
 
 // ----------------------------------------------------------------------------
@@ -209,6 +212,7 @@ Adjust.prototype.startDragging =
     this.turnOffTransitions();
     this.dragOrigin = { x : x, y : y };
     this.origin = Geom.relativeEl(this.target[0]);
+    this.snapshotOrigin = Geom.relativeEl(this.target[0]);
     this.drag(x, y);
   };
 
@@ -226,18 +230,21 @@ Adjust.prototype.drag =
   function drag (x, y)
   {
     var t  = this.target,
-        o  = this.origin,
+        o  = this.snapshotOrigin,
         dx = x - this.dragOrigin.x,
         dy = y - this.dragOrigin.y;
+
+    var w = Geom.width(this.geom),
+        h = Geom.height(this.geom);
 
     var g =
       { x : o.x + dx
       , y : o.y + dy
-      , r : o.r + dx
-      , b : o.b + dy
+      , r : o.x + dx + w
+      , b : o.y + dy + h
       };
 
-    this.geom = this.onDragAlign(g, o);
+    this.geom = this.onDragAlign(g, this.origin);
     this.render();
   };
 
@@ -277,6 +284,7 @@ Adjust.prototype.resetResizeStyling =
 Adjust.prototype.beforeResizing =
   function beforeResizing (x, y)
   {
+    if (!this.allowResizing) return;
     var resizeDir = this.inResizeBorder(x, y);
     this.resetResizeStyling();
     if (resizeDir.left  ) this.target.addClass("resizable-left");

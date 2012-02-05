@@ -1,5 +1,34 @@
 function Dsl () {}
 
+Dsl.bestOf =
+  function bestOf (f)
+  {
+    return function (g, o) { return Geom.sortByDistance(g, f(g, o))[0]; };
+  };
+
+Dsl.properlyOverlap =
+  function properlyOverlap (a)
+  {
+    return function (g, o)
+    {
+      var ag = a(g, o);
+      if (!ag) return g;
+
+      if (Geom.surface(ag) < Geom.surface(g))
+      {
+        var cy = (ag.y + ag.b) / 2;
+        var cx = (ag.x + ag.r) / 2;
+        return (g.y < cy && g.b > cy && g.x < cx && g.r > cx) ? ag : g;
+      }
+      else
+      {
+        var cy = (g.y + g.b) / 2;
+        var cx = (g.x + g.r) / 2;
+        return (ag.y < cy && ag.b > cy && ag.x < cx && ag.r > cx) ? ag : g;
+      }
+    };
+  };
+
 Dsl.grid =
   function grid (w, h)
   {
@@ -15,16 +44,21 @@ Dsl.grid =
   };
 
 Dsl.fromList =
-  function fromList (list, p, skip)
+  function fromList (list, p, butNot)
   {
-    return list.filter(function (n) { return skip.indexOf(n) == -1; })
-                .map(function (n) { return Geom.absoluteEl(n, p, true); });
+    return list.filter(function (n) { return butNot.indexOf(n) == -1; })
+                .map(function (n)
+                     {
+                       var g = Geom.absoluteEl(n, p, true);
+                       g.elem = n;
+                       return g;
+                     });
   };
 
 Dsl.selector =
-  function selector (sel, p, skip)
+  function selector (sel, p, butNot)
   {
-    return fromList($(sel).get(), p, skip);
+    return Dsl.fromList($(sel).get(), p, butNot);
   };
 
 Dsl.compose =
@@ -32,7 +66,8 @@ Dsl.compose =
   {
     return function compose (g, o)
     {
-      return a(b(g, o), o);
+      var bg = b(g, o);
+      return bg ? a(bg, o) : null;
     };
   };
 
@@ -103,6 +138,48 @@ Dsl.bounded =
              , b : g.d.bottom ? g.y + dh : g.b
              , d : g.d
              };
+    };
+  };
+
+Dsl.dragover =
+  function dragover (sel, p, butNot)
+  {
+    return function (g)
+    {
+      var ls = Dsl.selector(sel, p, butNot);
+      ls.forEach(function (n) { $(n.elem).removeClass("dragover"); });
+      ls = ls.filter(function (n) { return Geom.intersect(g, n); });
+      ls.forEach(function (n) { $(n.elem).addClass("dragover"); });
+      return ls;
+    };
+  };
+
+Dsl.swap =
+  function swap (el, n, a)
+  {
+    return function swap (g, o)
+    {
+      var x = a(g, o);
+      if (x && x.elem && !x.elem.__swapping && x.elem.__adjust)
+      {
+        var b = x.elem.__adjust;
+
+        // Rezize current item according to the swapped element.
+        g = Util.copy(g);
+        g.r = g.x + Geom.width(b.geom);
+        g.b = g.y + Geom.height(b.geom);
+
+        // Move element we are draaging over to our origin.
+        var e = el.__adjust;
+        e.origin = Util.copy(b.geom);
+        b.geom = o;
+        b.render();
+
+        // Prevent item from swapping back in the 'near future'.
+        x.elem.__swapping = true;
+        setTimeout(function () { x.elem.__swapping = false }, n);
+      }
+      return g;
     };
   };
 

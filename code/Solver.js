@@ -92,14 +92,12 @@ Solver.drag =
   {
     return function (g)
     {
-      var options = Util.concat(containers().map
+      return Util.concat(containers().map
         (function (c)
          {
            var os = Util.notNull(obstacles().map(function (o) { return Geom.intersect(o, c); }));
            return Solver.drag1(c, g, os);
          }));
-
-      return Geom.sortByDistance(g, options)[0];
     };
 
   };
@@ -141,6 +139,6 @@ Solver.resize =
 
 // Re-export as combinators.
 
-Dsl.dragSolver   = Solver.drag;
-Dsl.resizeSolver = Solver.resize;
+Dsl.drag   = Solver.drag;
+Dsl.resize = Solver.resize;
 

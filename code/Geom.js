@@ -10,6 +10,15 @@ Geom.relativeEl =
            };
   };
 
+Geom.width  = function width  (g) { return g.r - g.x; };
+Geom.height = function height (g) { return g.b - g.y; };
+
+Geom.surface =
+  function surface (g)
+  {
+    return Math.abs(g.r - g.x) * Math.abs(g.b - g.y);
+  };
+
 Geom.absoluteEl =
   function absoluteEl (e, p, s)
   {
@@ -87,6 +96,16 @@ Geom.distance =
     return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   };
 
+Geom.centroid =
+  function centroid (a)
+  {
+    return { x : (a.x + a.r) / 2
+           , y : (a.y + a.b) / 2
+           , r : (a.x + a.r) / 2
+           , b : (a.y + a.b) / 2
+           };
+  };
+
 Geom.setX = function setX (g, x) { return Util.set("x", x)(g); };
 Geom.setY = function setY (g, y) { return Util.set("y", y)(g); };
 Geom.setR = function setR (g, r) { return Util.set("r", r)(g); };
@@ -95,12 +114,18 @@ Geom.setB = function setB (g, b) { return Util.set("b", b)(g); };
 Geom.sortByDistance =
   function sortByDistance (g, xs)
   {
+    var c = Geom.centroid(g);
     return xs.sort(
       function (a, b)
       {
-        a.distance = Geom.distance(a, g);
-        b.distance = Geom.distance(b, g);
-        return a.distance - b.distance;
+        return Geom.distance(Geom.centroid(a), g) -
+               Geom.distance(Geom.centroid(b), g);
       });
   };
 
+Geom.withinRange =
+  function withinRange (g, d, x)
+  {
+    return Geom.distance(Geom.centroid(x), Geom.centroid(g)) < d ? x : null;
+  };
+ 
