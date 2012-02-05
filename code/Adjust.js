@@ -49,6 +49,8 @@ function Adjust (target, pivot, mode)
   this.onResizeAlign   = Util.id
   this.stopResizeAlign = Util.id
 
+  this.prevMove        = null;
+
   this.pivot.mousedown       (this.whenAdjusting(this.mousedown.scope(this)));
   this.pivot.mousemove       (this.whenAdjusting(this.hovering.scope(this)));
   this.pivot.mouseout        (this.whenAdjusting(this.mouseout.scope(this)));
@@ -118,11 +120,31 @@ Adjust.prototype.mouseup =
     return false;
   };
 
+
+Adjust.prototype.mousemove_ =
+  function mousemove_ (e)
+  {
+    if (this.dragging) this.drag(e.x, e.y);
+    if (this.resizing) this.resize(e.x, e.y);
+  };
+
 Adjust.prototype.mousemove =
   function mousemove (e)
   {
-    if (this.dragging) this.drag(e.clientX, e.clientY);
-    if (this.resizing) this.resize(e.clientX, e.clientY);
+    var cur = { x : e.clientX, y : e.clientY };
+    if (!this.prevMove) this.prevMove = cur;
+
+    var d = Geom.distance(this.prevMove, cur);
+    for (var i = 10; i < d; i += 10)
+      this.mousemove_
+        ({ x : Math.floor(this.prevMove.x + i * (cur.x - this.prevMove.x) / d)
+         , y : Math.floor(this.prevMove.y + i * (cur.y - this.prevMove.y) / d)
+         });
+    this.mousemove_(cur);
+
+
+    this.prevMove = cur;
+
     return false;
   };
 
