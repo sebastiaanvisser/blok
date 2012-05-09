@@ -1,14 +1,16 @@
-header
+#main
 {
-  background: white;
-  background-image: url("images/stripes.svg");
-  height: 24px * 2;
-  .shadow(0.1);
+  position: relative;
+  top:    24px *  2;
+  width:  24px * 10;
+  height: 24px * 28;
+  margin: 0 auto 0 auto;
+  background: url("../shared/images/checker.svg"), white;
 }
 
 .widget 
 {
-  background: url("images/stripes.svg"), -webkit-linear-gradient(top, #fa0, #f80);
+  background: url("../shared/images/stripes.svg"), -webkit-linear-gradient(top, #fa0, #f80);
   .box();
   .shadow();
 
