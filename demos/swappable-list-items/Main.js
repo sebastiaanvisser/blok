@@ -14,17 +14,6 @@ function start ()
 
         with (Dsl)
         {
-          var r =
-            compose
-              ( orOrigin
-                ( Dsl.resize
-                  ( function () { return [Geom.parentEl(el)]; }
-                  , function () { return Dsl.fromList(window.vp.middle, el.parentNode, [el]); }
-                  )
-                )
-              , bounded(24 * 8, 24 * 2)
-              );
-
           a.onDragAlign =
             compose
             ( swap(el, 200, properlyOverlap(bestOf(dragover(".widget", el.parentNode, [el]))))
