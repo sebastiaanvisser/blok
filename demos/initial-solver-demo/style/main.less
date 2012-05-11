@@ -1,0 +1,62 @@
+.container, .obstacle, .target, .good, .maybe,
+{
+  position: absolute;
+  -webkit-box-sizing: border-box;
+
+  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease; // , border-color 1s ease;
+}
+
+.container
+{
+  background-image: url("../shared/images/checker.svg");
+  -webkit-box-shadow: inset 0 0 10px rgba(0,0,0, 0.2);
+}
+
+.obstacle
+{
+  background-image: url("../shared/images/stripes.svg"), -webkit-linear-gradient(top, #fb0, #f80);
+  xopacity: 0.85;
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
+  cursor: move;
+}
+
+.good
+{
+  background: -webkit-linear-gradient(top, #8f8, #8f8);
+  xopacity: 0.4;
+}
+
+.maybe
+{
+  background: -webkit-linear-gradient(top, #f88, #f88);
+  xopacity: 0.4;
+}
+
+.target 
+{
+  background: -webkit-linear-gradient(top, #ffffff, #f7f7f7);
+  opacity: 0.9;
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+  cursor: move;
+}
+
+.container, .obstacle, .target, .good, .maybe,
+{
+  border-color: rgba(192,0,255, 0);
+  
+  &.resizable-left                   { cursor: w-resize; border-left:   solid 8px rgba(192,0,255, 1); background-position: -8px 0px; }
+  &.resizable-right                  { cursor: e-resize; border-right:  solid 8px rgba(192,0,255, 1); }
+  &.resizable-top                    { cursor: n-resize; border-top:    solid 8px rgba(192,0,255, 1); background-position: 0px -8px; }
+  &.resizable-bottom                 { cursor: s-resize; border-bottom: solid 8px rgba(192,0,255, 1); }
+  &.resizable-top.resizable-left     { cursor: nw-resize; background-position: -8px -8px; }
+  &.resizable-top.resizable-right    { cursor: ne-resize; }
+  &.resizable-bottom.resizable-left  { cursor: sw-resize; }
+  &.resizable-bottom.resizable-right { cursor: se-resize; }
+}
+
+.target.dragging,
+.target.resizing
+{
+  background: rgba(255,255,255, 0.8);
+}
+
