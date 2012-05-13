@@ -1,15 +1,34 @@
 function start ()
 {
-  var group = window.g = new Group;
   Geom.debugging   = true;
   Solver.debugging = true;
+
+  var group = window.g = new Group;
+  group.targetSolver =
+    function targetSolver ()
+    {
+      var containers = this.containers.map (function (adj) { return adj.target[0]; });
+      var obstacles  = this.obstacles.map  (function (adj) { return adj.target[0]; });
+      var targets    = this.targets.map    (function (adj) { return adj.target[0]; });
+      this.targets.forEach
+        (function (t)
+         {
+           var cf = function () { return Dsl.fromList(containers, null, []); };
+           var of = function () { return Dsl.fromList(obstacles.concat(targets),  null, [t.target[0]]); };
+           var dragger = Dsl.orOrigin(Dsl.bestOf(Dsl.drag(cf, of)));
+           t.onDragAlign = t.stopDragAlign = dragger;
+         });
+    };
+
+
+
+
 
   $( ".container" ).each(function (_, t) { group.addContainer (t) });
   $( ".obstacle"  ).each(function (_, t) { group.addObstacle  (t) });
   $( ".target"    ).each(function (_, t) { group.addTarget    (t) });
 
-
-  $( ".target"    ).click
+  $(".target").click
     ( function (ev)
       {
         if (!ev.shiftKey) return;
