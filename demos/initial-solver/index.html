@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<title>template</title>
+
+<!--#include virtual="html/meta.html" -->
+
+<body>
+
+  <span style=position:fixed><br>shift-click to duplicate</span>
+  <button onclick=javascript:toggleDebugging()
+          style=position:fixed
+          id=toggle-debugging>toggle debugging</button>
+
+  <div id=containers>
+    <div data-geom=" 2  2 33 38" class=container></div>
+    <div data-geom="34  2 46 28" class=container></div>
+    <div data-geom=" 2 29 46 38" class=container></div>
+  </div>
+  <div id=obstacles>
+    <div data-geom=" 3  3 32  8" class=obstacle></div>
+    <div data-geom=" 3 14 21 29" class=obstacle></div>
+  </div>
+  <div id=debug></div>
+  <div id=targets>
+    <!-- <div data-geom="26  3 35  7" class=target></div> -->
+    <div data-geom="35  3 45  7" class=target></div>
+    <div data-geom="35  8 45 12" class=target></div>
+    <div data-geom="35 13 45 17" class=target></div>
+    <div data-geom="35 18 45 22" class=target></div>
+  </div>
+
+</body>
+
+</html>
+

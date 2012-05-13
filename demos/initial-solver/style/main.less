@@ -1,0 +1,80 @@
+.container, .obstacle, .target, .debug
+{
+  position: absolute;
+  -webkit-box-sizing: border-box;
+  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease;
+}
+
+.container
+{
+  background: #eee;
+}
+
+.obstacle
+{
+  background-image: url("../shared/images/stripes.svg"), -webkit-linear-gradient(top, #fb0, #f80);
+  opacity: 0.85;
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
+  cursor: move;
+}
+
+.target 
+{
+  background: -webkit-linear-gradient(top, #ffffff, #f7f7f7);
+  opacity: 0.9;
+  -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.1);
+  cursor: move;
+}
+
+.container, .obstacle, .target
+{
+  border-color: rgba(192,0,255, 0);
+  
+  &.resizable-left                   { cursor: w-resize; border-left:   solid 8px rgba(192,0,255, 1); background-position: -8px 0px; }
+  &.resizable-right                  { cursor: e-resize; border-right:  solid 8px rgba(192,0,255, 1); }
+  &.resizable-top                    { cursor: n-resize; border-top:    solid 8px rgba(192,0,255, 1); background-position: 0px -8px; }
+  &.resizable-bottom                 { cursor: s-resize; border-bottom: solid 8px rgba(192,0,255, 1); }
+  &.resizable-top.resizable-left     { cursor: nw-resize; background-position: -8px -8px; }
+  &.resizable-top.resizable-right    { cursor: ne-resize; }
+  &.resizable-bottom.resizable-left  { cursor: sw-resize; }
+  &.resizable-bottom.resizable-right { cursor: se-resize; }
+}
+
+.target.dragging,
+.target.resizing
+{
+  background: rgba(255,255,255, 0.8);
+}
+
+// ----------------------------------------------------------------------------
+// Debuggin styles.
+
+.debug.elem.good
+{
+  background: #8f8;
+  border: solid 2px green;
+  opacity: 0.6;
+}
+
+.debug.elem.maybe
+{
+  outline: dashed 2px red;
+  opacity: 0.2;
+}
+
+.debug.elem.bad
+{
+  outline: solid 5px red;
+}
+
+.debug.point
+{
+  background: green;
+  border-radius: 20px;
+}
+
+.debug.point.origin
+{
+  background: red;
+}
+
