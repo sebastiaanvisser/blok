@@ -1,9 +1,8 @@
-.container, .obstacle, .target, .good, .maybe,
+.container, .obstacle, .target, .debug
 {
   position: absolute;
   -webkit-box-sizing: border-box;
-
-  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease; // , border-color 1s ease;
+  -webkit-transition: left 0.2s ease, top 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
 
 .container
@@ -15,21 +14,9 @@
 .obstacle
 {
   background-image: url("../shared/images/stripes.svg"), -webkit-linear-gradient(top, #fb0, #f80);
-  xopacity: 0.85;
+  opacity: 0.85;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0, 0.06);
   cursor: move;
-}
-
-.good
-{
-  background: -webkit-linear-gradient(top, #8f8, #8f8);
-  xopacity: 0.4;
-}
-
-.maybe
-{
-  background: -webkit-linear-gradient(top, #f88, #f88);
-  xopacity: 0.4;
 }
 
 .target 
@@ -40,7 +27,7 @@
   cursor: move;
 }
 
-.container, .obstacle, .target, .good, .maybe,
+.container, .obstacle, .target
 {
   border-color: rgba(192,0,255, 0);
   
@@ -58,5 +45,37 @@
 .target.resizing
 {
   background: rgba(255,255,255, 0.8);
+}
+
+// ----------------------------------------------------------------------------
+// Debuggin styles.
+
+.debug.elem.good
+{
+  background: #8f8;
+  border: solid 2px green;
+  opacity: 0.6;
+}
+
+.debug.elem.maybe
+{
+  outline: dashed 2px red;
+  opacity: 0.2;
+}
+
+.debug.elem.bad
+{
+  outline: solid 5px red;
+}
+
+.debug.point
+{
+  background: green;
+  border-radius: 20px;
+}
+
+.debug.point.origin
+{
+  background: red;
 }
 
