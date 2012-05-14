@@ -34,6 +34,9 @@ function start ()
       }
     );
 
+  // Trick to allow optional debugging code to kick in.
+  $(document).keypress(function (ev) { if (ev.keyCode == 32) window.debugging = true; });
+
 }
 
 function toggleDebugging ()
