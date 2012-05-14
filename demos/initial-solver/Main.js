@@ -2,6 +2,9 @@ function start ()
 {
   var group = window.g = new Group;
 
+  Solver.debugging = false;
+  Geom.debugging   = false;
+
   group.containerSolver =
     function containerSolver ()
     {
