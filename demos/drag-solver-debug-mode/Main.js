@@ -20,10 +20,6 @@ function start ()
          });
     };
 
-
-
-
-
   $( ".container" ).each(function (_, t) { group.addContainer (t) });
   $( ".obstacle"  ).each(function (_, t) { group.addObstacle  (t) });
   $( ".target"    ).each(function (_, t) { group.addTarget    (t) });
