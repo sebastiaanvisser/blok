@@ -1,0 +1,64 @@
+.box ()
+{
+  @v: border-box;
+  -webkit-box-sizing: @v;
+     -moz-box-sizing: @v;
+      -ms-box-sizing: @v;
+        o-box-sizing: @v;
+          box-sizing: @v;
+}
+
+.radius (@r: 3px)
+{
+  -webkit-border-radius: @r;
+     -moz-border-radius: @r;
+      -ms-border-radius: @r;
+       -o-border-radius: @r;
+          border-radius: @r;
+}
+
+.shadow (@a: 0.1, @b: 40px)
+{
+  @v: 0px 0px @b rgba(0,0,0, @a);
+  -webkit-box-shadow: @v;
+     -moz-box-shadow: @v;
+      -ms-box-shadow: @v;
+       -o-box-shadow: @v;
+          box-shadow: @v;
+}
+
+.hgradient (@f, @t)
+{
+  background: -webkit-linear-gradient(left, @f, @t);
+  background:    -moz-linear-gradient(left, @f, @t);
+  background:     -ms-linear-gradient(left, @f, @t);
+  background:      -o-linear-gradient(left, @f, @t);
+  background:         linear-gradient(left, @f, @t);
+}
+
+.vgradient (@f, @t)
+{
+  background: -webkit-linear-gradient(top, @f, @t);
+  background:    -moz-linear-gradient(top, @f, @t);
+  background:     -ms-linear-gradient(top, @f, @t);
+  background:      -o-linear-gradient(top, @f, @t);
+  background:         linear-gradient(top, @f, @t);
+}
+
+.animate (@p, @d: 0.2s, @w: ease)
+{
+  -webkit-transition: @p @d @w;
+     -moz-transition: @p @d @w;
+      -ms-transition: @p @d @w;
+       -o-transition: @p @d @w;
+          transition: @p @d @w;
+}
+
+.ellipsis (@max-width: 100%)
+{
+  max-width: @max-width;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
