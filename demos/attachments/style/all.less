@@ -1,0 +1,54 @@
+@import "../../shared/style/util.less";
+@import "../../shared/style/adjust.less";
+
+html, body
+{
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+#container
+{
+  background: #eee;
+  background-image: url("../shared/images/checker.svg");
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.container, .target
+{
+  .draggable();
+  .resizable();
+}
+
+.container
+{
+  background: #eee;
+}
+
+.target 
+{
+  background: white;
+}
+
+.target.dragging,
+.target.resizing
+{
+}
+
+// ----------------------------------------------------------------------------
+
+#bg div
+{
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: black;
+  .shadow(1.0, 40px);
+}
+
