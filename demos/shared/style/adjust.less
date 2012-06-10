@@ -1,0 +1,57 @@
+@animDuration: 0.2s;
+
+.geomAnimation ()
+{
+  -webkit-transition: left       @animDuration ease
+                    , top        @animDuration ease
+                    , width      @animDuration ease
+                    , height     @animDuration ease
+                    , max-width  @animDuration ease
+                    , min-height @animDuration ease;
+}
+
+.selectable ()
+{
+  // &.selected { outline: dashed 2px rgba(0,100,255, 0.4); }
+}
+
+.draggable()
+{
+  position: absolute;
+  .box();
+
+  &.draggable
+  {
+    cursor: move;
+  }
+
+  &.dragging { outline: solid 10px rgba(0,0,0,0.1); }
+}
+
+.dragover
+{
+  // outline: solid 5px rgba(0,0,255,0.2) !important;
+}
+
+.resizable ()
+{
+  &.resizable-left                   { cursor: w-resize;  }
+  &.resizable-right                  { cursor: e-resize;  }
+  &.resizable-top                    { cursor: n-resize;  }
+  &.resizable-bottom                 { cursor: s-resize;  }
+  &.resizable-top.resizable-left     { cursor: nw-resize; }
+  &.resizable-top.resizable-right    { cursor: ne-resize; }
+  &.resizable-bottom.resizable-left  { cursor: sw-resize; }
+  &.resizable-bottom.resizable-right { cursor: se-resize; }
+
+  &.resizing { outline: solid 10px rgba(0,0,0,0.1); }
+}
+
+.adjustable ()
+{
+  .geomAnimation();
+  .selectable();
+  .draggable();
+  .resizable();
+}
+
