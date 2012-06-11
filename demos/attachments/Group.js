@@ -15,7 +15,7 @@ Group.prototype.addContainer =
 Group.prototype.addTarget =
   function addTarget (t)
   {
-    var adj = new Adjust(t);
+    var adj = new Adjust(t, undefined, undefined, 1);
     this.targets.push(adj);
     return adj;
   };
