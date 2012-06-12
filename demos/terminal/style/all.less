@@ -1,5 +1,6 @@
 @import "../../shared/style/util.less";
 @import "../../shared/style/adjust.less";
+@import "../../shared/style/debug.less";
 
 html, body
 {
@@ -23,6 +24,7 @@ html, body
 
 .container, .target
 {
+  // .geomAnimation();
   .draggable();
   .resizable();
 }
@@ -32,10 +34,12 @@ html, body
   background: #eee;
 }
 
+@c: #222;
+
 .target 
 {
   background: #000;
-  border: solid 1px #222;
+  border: solid 1px @c;
 }
 
 .target.dragging,
@@ -51,7 +55,7 @@ html, body
   position: absolute;
   width: 40px;
   height: 40px;
-  background: #222;
+  background: @c;
   .radius(3px);
 }
 
