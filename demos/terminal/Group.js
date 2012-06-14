@@ -43,7 +43,7 @@ Group.prototype.touch =
          var of = function () { return Dsl.fromList(targets, null, [t.target[0]]); };
 
          var grid          = Dsl.grid(me.grid, me.grid);
-         var bounds        = Dsl.bounded(4 * me.grid, 4 * me.grid);
+         var bounds        = Dsl.bounded(2 * me.grid, 2 * me.grid);
          var dragger       = Dsl.orOrigin(Dsl.bestOf(Dsl.drag(cf, of)));
          var resize        = Dsl.compose(Dsl.orOrigin(Dsl.resize(cf, of)), bounds);
 
@@ -56,12 +56,7 @@ Group.prototype.touch =
     this.targets.forEach
       ( function (t, i)
         {
-          t.hooks =
-            [ function (t)
-              {
-                Adjust.render($($("#bg > div")[i]), Geom.grow(t.geom, 5));
-              }
-            ];
+          t.hooks = [ function (t) { Adjust.render($($("#bg > div")[i]), Geom.grow(t.geom, 10)); } ];
         }
       );
 

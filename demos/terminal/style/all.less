@@ -4,41 +4,37 @@
 
 html, body
 {
-  background: black;
+  background: white;
   height: 100%;
   padding: 0;
   margin: 0;
   overflow: hidden;
 }
 
+@margin: 10px;
+
 #container
 {
-  background: #111;
+  background: #eee;
   background-image: url("grid.svg");
   position: absolute;
-  left: 50px;
-  top: 50px;
-  right: 50px;
-  bottom: 50px;
+  left: @margin;
+  top: @margin;
+  right: @margin;
+  bottom: @margin;
 }
 
 .container, .target
 {
-  // .geomAnimation();
   .draggable();
   .resizable();
 }
 
-.container
-{
-  background: #eee;
-}
-
-@c: #222;
+@c: #999;
 
 .target 
 {
-  background: #000;
+  background: #eee;
   border: solid 1px @c;
 }
 
@@ -56,6 +52,6 @@ html, body
   width: 40px;
   height: 40px;
   background: @c;
-  .radius(3px);
+  .radius(5px);
 }
 
