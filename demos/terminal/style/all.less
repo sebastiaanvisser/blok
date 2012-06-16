@@ -26,16 +26,27 @@ html, body
 
 .container, .target
 {
+  // .geomAnimation();
   .draggable();
   .resizable();
 }
 
-@c: #999;
+@c: #666;
 
 .target 
 {
-  background: #eee;
+  background: rgba(255,255,255,0.9);
   border: solid 1px @c;
+
+  left: 0px;
+  top: 0px;
+  width: 100px;
+  height: 100px;
+
+  &.selected
+  {
+    border: dashed 2px @c;
+  }
 }
 
 .target.dragging,
@@ -51,7 +62,6 @@ html, body
   position: absolute;
   width: 40px;
   height: 40px;
-  background: @c;
-  .radius(5px);
+  border: solid 5px @c;
 }
 

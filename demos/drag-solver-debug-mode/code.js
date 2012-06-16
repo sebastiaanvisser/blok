@@ -8,7 +8,9 @@
 <!--#include virtual="../../lib/Util.js"     -->
 <!--#include virtual="../../lib/Geom.js"     -->
 <!--#include virtual="../../lib/Viewport.js" -->
-<!--#include virtual="../../lib/Adjust.js"   -->
+<!--#include virtual="../../lib/Block.js"    -->
+<!--#include virtual="../../lib/Drag.js"     -->
+<!--#include virtual="../../lib/Resize.js"   -->
 <!--#include virtual="../../lib/Solver.js"   -->
 <!--#include virtual="../../lib/Dsl.js"      -->
 <!--#include virtual="../../lib/Group.js"    -->

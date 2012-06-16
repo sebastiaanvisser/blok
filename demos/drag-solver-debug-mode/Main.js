@@ -16,7 +16,7 @@ function start ()
            var cf = function () { return Dsl.fromList(containers, null, []); };
            var of = function () { return Dsl.fromList(obstacles.concat(targets),  null, [t.target[0]]); };
            var dragger = Dsl.orOrigin(Dsl.bestOf(Dsl.drag(cf, of)));
-           t.onDragAlign = t.stopDragAlign = dragger;
+           t.drag.onDrag = t.drag.onStop = dragger;
          });
     };
 
@@ -33,11 +33,11 @@ function start ()
         $("#targets").append(div);
         var adj = group.addTarget(div[0]);
 
-        adj.geom.x = ev.target.__adjust.geom.x;
-        adj.geom.y = ev.target.__adjust.geom.y;
-        adj.geom.r = ev.target.__adjust.geom.r;
-        adj.geom.b = ev.target.__adjust.geom.b;
-        adj.touch();
+        adj.geom.x = ev.target.__block.geom.x;
+        adj.geom.y = ev.target.__block.geom.y;
+        adj.geom.r = ev.target.__block.geom.r;
+        adj.geom.b = ev.target.__block.geom.b;
+        adj.drag.touch();
       }
     );
 

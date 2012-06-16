@@ -8,13 +8,13 @@ function start ()
   $(".widget").each
     ( function (_, el)
       {
-        var a = new Adjust(el, el, mode);
-        a.allowResizing = false;
-        a.moveToTop = true;
+        var block = new Block(el);
+        new Drag(block);
+        block.initialGeometry(24);
 
         with (Dsl)
         {
-          a.onDragAlign =
+          block.drag.onDrag =
             compose
             ( swap(el, 200, properlyOverlap(bestOf(dragover(".widget", el.parentNode, [el]))))
             , strech(0.8,
@@ -28,7 +28,7 @@ function start ()
                   ))
             )
 
-          a.stopDragAlign =
+          block.drag.onStop =
             compose(grid(24, 24),
               orOrigin
                 ( Dsl.bestOf

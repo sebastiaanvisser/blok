@@ -7,31 +7,27 @@ function Group ()
 Group.prototype.addContainer =
   function addContainer (t)
   {
-    var adj = new Adjust(t);
-    this.containers.push(adj);
-    return adj;
+    var block = new Block(t);
+    this.containers.push(block);
+    return block;
   };
 
 Group.prototype.addTarget =
   function addTarget (t)
   {
-    var adj = new Adjust(t, undefined, undefined, 1);
-    this.targets.push(adj);
-    return adj;
+    var block = new Block(t, undefined, undefined, 1);
+    new Drag(block);
+    new Resize(block);
+    block.initialGeometry(1);
+    this.targets.push(block);
+    return block;
   };
 
 Group.prototype.touch =
   function touch ()
   {
-    var containers = this.containers.map (function (adj) { return adj.target[0]; });
-    var targets    = this.targets.map    (function (adj) { return adj.target[0]; });
-
-    this.containers.forEach
-      (function (t)
-       {
-         t.allowDragging = false;
-         t.allowResizing = false;
-       });
+    var containers = this.containers.map (function (block) { return block.target[0]; });
+    var targets    = this.targets.map    (function (block) { return block.target[0]; });
 
     this.targets.forEach
       (function (t)
@@ -42,24 +38,24 @@ Group.prototype.touch =
          var dragger       = Dsl.orOrigin(Dsl.bestOf(Dsl.drag(cf, of)));
          var resize        = Dsl.compose(Dsl.orOrigin(Dsl.resize( cf, of)), Dsl.bounded(12 * 4, 12 * 4));
 
-         t.onDragAlign     =
-         t.stopDragAlign   = Dsl.margin(dragger, 0);
-         t.onResizeAlign   = 
-         t.stopResizeAlign = Dsl.margin(resize, 0);
+         t.drag.onDrag     =
+         t.drag.onStop     = Dsl.margin(dragger, 0);
+         t.resize.onResize = 
+         t.resize.onStop   = Dsl.margin(resize, 0);
        });
 
     this.targets.forEach
       ( function (t, i)
         {
-          t.hooks =
+          t.onRender =
             [ function (t)
               {
-                Adjust.render($($("#bg > div")[i]), Geom.grow(t.geom, 10));
+                Block.render($($("#bg > div")[i]), Geom.grow(t.geom, 10));
               }
             ];
         }
       );
 
-    this.targets.forEach(function (x) { x.touch(); });
+    this.targets.forEach(function (x) { x.drag.touch(); });
   };
 

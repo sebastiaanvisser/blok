@@ -27,13 +27,13 @@ function start ()
 
         var div = $("<div data-geom='0 0 1 1' class=target></div>");
         $("#targets").append(div);
-        var adj = group.addTarget(div[0]);
+        var block = group.addTarget(div[0]);
 
-        adj.geom.x = ev.target.__adjust.geom.x;
-        adj.geom.y = ev.target.__adjust.geom.y;
-        adj.geom.r = ev.target.__adjust.geom.r;
-        adj.geom.b = ev.target.__adjust.geom.b;
-        adj.touch();
+        block.geom.x = ev.target.__block.geom.x;
+        block.geom.y = ev.target.__block.geom.y;
+        block.geom.r = ev.target.__block.geom.r;
+        block.geom.b = ev.target.__block.geom.b;
+        block.touch();
       }
     );
 
