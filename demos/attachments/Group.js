@@ -15,7 +15,7 @@ Group.prototype.addContainer =
 Group.prototype.addTarget =
   function addTarget (t)
   {
-    var block = new Block(t, undefined, undefined, 1);
+    var block = new Block(t);
     new Drag(block);
     new Resize(block);
     block.initialGeometry(1);
@@ -56,6 +56,6 @@ Group.prototype.touch =
         }
       );
 
-    this.targets.forEach(function (x) { x.drag.touch(); });
+    this.targets.forEach(function (x) { x.render(); });
   };
 
