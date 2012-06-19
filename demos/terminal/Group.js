@@ -19,8 +19,8 @@ Group.prototype.makeTarget =
     $("#bg").append(b);
     $("#fg").append(f);
 
-    var t = new Block(f, Drag, Resize);
-    var a = new Block(b, Resize, Select);
+    var t = new Block(f, Drag, Resize, Scale);
+    var a = new Block(b, Resize, Scale);
     t.attachment = a;
 
     this.targets.push(t);
@@ -59,6 +59,7 @@ Group.prototype.install =
       (function (t)
        {
          t = t.attachment;
+         t.resize.moveToTop = false;
 
          var cf = function () { return Dsl.fromList(containers, null, []); };
          var of = function () { return Dsl.fromList(attachments, null, [t.target[0]]); };
@@ -77,28 +78,6 @@ Group.prototype.install =
         {
           t.onRender            = [ function () { t.attachment.adjust(Geom.grow(t.geom, 5)); } ];
           t.attachment.onRender = [ function () { t.adjust(Geom.shrink(t.attachment.geom, 5)); } ];
-        }
-      );
-
-    $(this.targets.map(function (t) { return t.target[0]; })).click
-      ( function (ev)
-        {
-          if (!ev.metaKey) return;
-
-          var r = this.__block.resize;
-
-          r.startResizing(ev.clientX, ev.clientY, { top: true });
-          r.resize(ev.clientX, -Infinity);
-          r.stopResizing();
-          r.startResizing(ev.clientX, ev.clientY, { bottom: true });
-          r.resize(ev.clientX, Infinity);
-          r.stopResizing();
-          r.startResizing(ev.clientX, ev.clientY, { left: true });
-          r.resize(-Infinity, ev.clientY);
-          r.stopResizing();
-          r.startResizing(ev.clientX, ev.clientY, { right: true });
-          r.resize(Infinity, ev.clientY);
-          r.stopResizing();
         }
       );
 
