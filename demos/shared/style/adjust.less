@@ -17,13 +17,11 @@
 
 .draggable()
 {
+  z-index: 1;
   position: absolute;
   .box();
 
-  &.draggable
-  {
-    cursor: move;
-  }
+  &.draggable { cursor: move; }
 }
 
 .dragover
@@ -33,6 +31,10 @@
 
 .resizable ()
 {
+  z-index: 1;
+  position: absolute;
+  .box();
+
   &.resizable-left                   { cursor: w-resize;  }
   &.resizable-right                  { cursor: e-resize;  }
   &.resizable-top                    { cursor: n-resize;  }
