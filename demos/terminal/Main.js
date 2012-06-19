@@ -1,12 +1,13 @@
 function start ()
 {
+  window.g = new Group;
 
-  var group = window.g = new Group;
-  $( "#container" ).each(function (_, t) { group.addContainer (t) });
-  $( ".target"    ).each(function (_, t) { group.addTarget    (t) });
-  g.touch();
+  g.addContainer($("#container"));
 
-  $("#container").click(function () { Debug.clear(); });
+  for (var i = 0; i < 10; i++)
+    g.makeTarget($("#bg"), $("#fg"))
+
+  g.install();
 }
 
 $(document).ready(start);

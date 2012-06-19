@@ -24,16 +24,28 @@ html, body
   bottom: @margin;
 }
 
-.container, .target
+// ----------------------------------------------------------------------------
+
+#bg > div,
+#fg > div
 {
-  // .geomAnimation();
+  position: absolute;
+
+  .box();
   .draggable();
   .resizable();
 }
 
-@c: #666;
+@c: #ccc;
 
-.target 
+#bg > div
+{
+  width: 40px;
+  height: 40px;
+  border: solid 10px @c;
+}
+
+#fg > div
 {
   background: rgba(255,255,255,0.9);
   border: solid 1px @c;
@@ -47,21 +59,5 @@ html, body
   {
     border: dashed 2px @c;
   }
-}
-
-.target.dragging,
-.target.resizing
-{
-}
-
-// ----------------------------------------------------------------------------
-
-#bg div
-{
-  .box();
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border: solid 5px @c;
 }
 

@@ -1,43 +1,39 @@
 function Group ()
 {
-  this.containers = [];
-  this.targets    = [];
-  this.grid       = 10;
+  this.containers  = [];
+  this.targets     = [];
+  this.grid        = 10;
 }
 
 Group.prototype.addContainer =
   function addContainer (t)
   {
-    var block = new Block(t);
-    this.containers.push(block);
-    return block;
+    this.containers.push(new Block(t));
   };
 
-Group.prototype.addTarget =
-  function addTarget (t)
+Group.prototype.makeTarget =
+  function makeTarget (bg, fg)
   {
-    var block = new Block(t);
-    new Drag(block);
-    new Resize(block);
-    new Select(block);
-    this.targets.push(block);
-    return block;
+    var b = $("<div>");
+    var f = $("<div>");
+    $("#bg").append(b);
+    $("#fg").append(f);
+
+    var t = new Block(f, Drag, Resize);
+    var a = new Block(b, Resize, Select);
+    t.attachment = a;
+
+    this.targets.push(t);
   };
 
-Group.prototype.touch =
-  function touch ()
+Group.prototype.install =
+  function install ()
   {
-    var containers = this.containers.map (function (block) { return block.target[0]; });
-    var targets    = this.targets.map    (function (block) { return block.target[0]; });
+    var containers  = this.containers.map  (function (block) { return block.target[0];            });
+    var targets     = this.targets.map     (function (block) { return block.target[0];            });
+    var attachments = this.targets.map     (function (block) { return block.attachment.target[0]; });
 
     var me = this;
-
-    this.containers.forEach
-      (function (t)
-       {
-         t.allowDragging = false;
-         t.allowResizing = false;
-       });
 
     this.targets.forEach
       (function (t)
@@ -45,21 +41,42 @@ Group.prototype.touch =
          var cf = function () { return Dsl.fromList(containers, null, []); };
          var of = function () { return Dsl.fromList(targets, null, [t.target[0]]); };
 
+         t.drag.moveToTop =
+         t.resize.moveToTop = true;
+
          var grid          = Dsl.grid(me.grid, me.grid);
          var bounds        = Dsl.bounded(2 * me.grid, 2 * me.grid);
-         var dragger       = Dsl.orOrigin(Dsl.bestOf(Dsl.drag(cf, of)));
+         var drag          = Dsl.orOrigin(Dsl.bestOf(Dsl.drag(cf, of)));
          var resize        = Dsl.compose(Dsl.orOrigin(Dsl.resize(cf, of)), bounds);
 
-         t.drag.onDrag     = 
-         t.drag.onStop     = Dsl.compose(dragger, grid);
+         t.drag.onDrag     =
+         t.drag.onStop     = Dsl.compose(drag, grid);
          t.resize.onResize =
-         t.resize.onStop   = Dsl.compose(resize,  grid);
+         t.resize.onStop   = Dsl.compose(resize, grid);
+       });
+
+    this.targets.forEach
+      (function (t)
+       {
+         t = t.attachment;
+
+         var cf = function () { return Dsl.fromList(containers, null, []); };
+         var of = function () { return Dsl.fromList(attachments, null, [t.target[0]]); };
+
+         var grid          = Dsl.grid(me.grid, me.grid, 5, 5);
+         var bounds        = Dsl.bounded(2 * me.grid, 2 * me.grid);
+         var drag          = Dsl.orOrigin(Dsl.bestOf(Dsl.drag(cf, of)));
+         var resize        = Dsl.compose(Dsl.orOrigin(Dsl.resize(cf, of)), bounds);
+
+         t.resize.onResize =
+         t.resize.onStop   = Dsl.compose(Dsl.margin(resize, -10), grid);
        });
 
     this.targets.forEach
       ( function (t, i)
         {
-          t.onRender = [ function (t) { Block.render($($("#bg > div")[i]), Geom.grow(t.geom, 5)); } ];
+          t.onRender            = [ function () { t.attachment.adjust(Geom.grow(t.geom, 5)); } ];
+          t.attachment.onRender = [ function () { t.adjust(Geom.shrink(t.attachment.geom, 5)); } ];
         }
       );
 
@@ -68,21 +85,24 @@ Group.prototype.touch =
         {
           if (!ev.metaKey) return;
 
-          this.__block.resize.startResizing(ev.clientX, ev.clientY, { top: true });
-          this.__block.resize.resize(ev.clientX, -Infinity);
-          this.__block.resize.stopResizing();
-          this.__block.resize.startResizing(ev.clientX, ev.clientY, { bottom: true });
-          this.__block.resize.resize(ev.clientX, Infinity);
-          this.__block.resize.stopResizing();
-          this.__block.resize.startResizing(ev.clientX, ev.clientY, { left: true });
-          this.__block.resize.resize(-Infinity, ev.clientY);
-          this.__block.resize.stopResizing();
-          this.__block.resize.startResizing(ev.clientX, ev.clientY, { right: true });
-          this.__block.resize.resize(Infinity, ev.clientY);
-          this.__block.resize.stopResizing();
+          var r = this.__block.resize;
+
+          r.startResizing(ev.clientX, ev.clientY, { top: true });
+          r.resize(ev.clientX, -Infinity);
+          r.stopResizing();
+          r.startResizing(ev.clientX, ev.clientY, { bottom: true });
+          r.resize(ev.clientX, Infinity);
+          r.stopResizing();
+          r.startResizing(ev.clientX, ev.clientY, { left: true });
+          r.resize(-Infinity, ev.clientY);
+          r.stopResizing();
+          r.startResizing(ev.clientX, ev.clientY, { right: true });
+          r.resize(Infinity, ev.clientY);
+          r.stopResizing();
         }
       );
 
-    this.targets.forEach(function (x) { x.drag.touch(); });
+    this.targets.forEach     (function (x) { x.drag.touch(); });
+    // this.attachments.forEach (function (x) { x.drag.touch(); });
   };
 
