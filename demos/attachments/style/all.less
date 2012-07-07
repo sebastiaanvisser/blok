@@ -1,55 +1,56 @@
 @import "../../shared/style/util.less";
 @import "../../shared/style/adjust.less";
+@import "../../shared/style/debug.less";
 
 html, body
 {
+  background: white;
   height: 100%;
   padding: 0;
   margin: 0;
   overflow: hidden;
 }
 
+@margin: 10px;
+
 #container
 {
   background: #eee;
-  background-image: url("../shared/images/checker.svg");
+  background-image: url("../shared/images/stripes.svg");
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.container, .target
-{
-  .draggable();
-  .resizable();
-}
-
-.container
-{
-  background: #eee;
-}
-
-.target 
-{
-  background: white;
-}
-
-.target.dragging,
-.target.resizing
-{
+  left: @margin;
+  top: @margin;
+  right: @margin;
+  bottom: @margin;
 }
 
 // ----------------------------------------------------------------------------
 
-#bg div
+#bg > div,
+#fg > div
 {
-  .box();
   position: absolute;
-  width: 40px;
-  height: 40px;
+
+  .box();
+  .draggable();
+  .resizable();
+}
+
+@c: #888;
+
+#bg > div
+{
   background: black;
   .shadow(1.0, 40px);
+}
+
+#fg > div
+{
+  background: #fff url("../shared/images/stripes.svg") fixed;
+
+  left: 0px;
+  top: 0px;
+  width: 200px;
+  height: 200px;
 }
 
