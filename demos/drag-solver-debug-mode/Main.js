@@ -13,8 +13,8 @@ function start ()
       this.targets.forEach
         (function (t)
          {
-           var cf = function () { return Dsl.fromList(containers, null, []); };
-           var of = function () { return Dsl.fromList(obstacles.concat(targets),  null, [t.target[0]]); };
+           var cf = function () { return Dsl.fromList(containers, []); };
+           var of = function () { return Dsl.fromList(obstacles.concat(targets), [t.target[0]]); };
            var dragger = Dsl.orOrigin(Dsl.bestOf(Dsl.drag(cf, of)));
            t.drag.onDrag = t.drag.onStop = dragger;
          });

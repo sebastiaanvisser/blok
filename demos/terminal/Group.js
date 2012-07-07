@@ -38,8 +38,8 @@ Group.prototype.install =
     this.targets.forEach
       (function (t)
        {
-         var cf = function () { return Dsl.fromList(containers, null, []); };
-         var of = function () { return Dsl.fromList(targets, null, [t.target[0]]); };
+         var cf = function () { return Dsl.fromList(containers, []); };
+         var of = function () { return Dsl.fromList(targets, [t.target[0]]); };
 
          t.drag.moveToTop =
          t.resize.moveToTop = true;
@@ -61,8 +61,8 @@ Group.prototype.install =
          t = t.attachment;
          t.resize.moveToTop = false;
 
-         var cf = function () { return Dsl.fromList(containers, null, []); };
-         var of = function () { return Dsl.fromList(attachments, null, [t.target[0]]); };
+         var cf = function () { return Dsl.fromList(containers, []); };
+         var of = function () { return Dsl.fromList(attachments, [t.target[0]]); };
 
          var grid          = Dsl.grid(me.grid, me.grid, 5, 5);
          var bounds        = Dsl.bounded(2 * me.grid, 2 * me.grid);
@@ -86,7 +86,7 @@ Group.prototype.install =
           a.onAdjust.push
            ( function (g)
              {
-               var ls = Dsl.selector("#bg > div", null, []); //[this.target[0]]);
+               var ls = Dsl.selector("#bg > div", []); //[this.target[0]]);
                ls.forEach(function (n) { $(n.elem).removeClass("dragover"); });
                ls = ls.filter(function (n) { return Geom.intersect(g, n); });
                ls.forEach(function (n) { $(n.elem).addClass("dragover"); });
@@ -96,7 +96,7 @@ Group.prototype.install =
           a.resize.onStopE.push
            ( function (g)
              {
-               var ls = Dsl.selector("#bg > div", null, []); //[this.target[0]]);
+               var ls = Dsl.selector("#bg > div", []); //[this.target[0]]);
                ls.forEach(function (n) { $(n.elem).removeClass("dragover"); });
              }
            );
