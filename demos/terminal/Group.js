@@ -71,17 +71,39 @@ Group.prototype.install =
 
          t.resize.onResize =
          t.resize.onStop   = Dsl.compose(Dsl.margin(resize, -10), grid);
+
        });
 
     this.targets.forEach
       ( function (t, i)
         {
-          t.onRender            = [ function () { t.attachment.adjust(Geom.grow(t.geom, 5)); } ];
-          t.attachment.onRender = [ function () { t.adjust(Geom.shrink(t.attachment.geom, 5)); } ];
+          var a = t.attachment;
+
+          t.onAdjust.push(function () { a.adjust(Geom.grow   (t.geom, 5)); });
+          a.onAdjust.push(function () { t.adjust(Geom.shrink (a.geom, 5)); });
+
+/*
+          a.onAdjust.push
+           ( function (g)
+             {
+               var ls = Dsl.selector("#bg > div", null, []); //[this.target[0]]);
+               ls.forEach(function (n) { $(n.elem).removeClass("dragover"); });
+               ls = ls.filter(function (n) { return Geom.intersect(g, n); });
+               ls.forEach(function (n) { $(n.elem).addClass("dragover"); });
+             }
+           );
+
+          a.resize.onStopE.push
+           ( function (g)
+             {
+               var ls = Dsl.selector("#bg > div", null, []); //[this.target[0]]);
+               ls.forEach(function (n) { $(n.elem).removeClass("dragover"); });
+             }
+           );
+*/
         }
       );
 
     this.targets.forEach     (function (x) { x.drag.touch(); });
-    // this.attachments.forEach (function (x) { x.drag.touch(); });
   };
 
