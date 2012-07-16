@@ -1,0 +1,87 @@
+@import "../../shared/style/util.less";
+@import "../../shared/style/adjust.less";
+@import "../../shared/style/debug.less";
+
+html, body
+{
+  background: white;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+
+  font-family: Helvetica;
+}
+
+@columns: 3;
+@column: 260px;
+@row: 100px;
+@gap: 40px;
+
+#content
+{
+  position: relative;
+  margin: 0px auto;
+  background: white url("images/grid.svg");
+  width: (@gap + @column) * @columns + @gap;
+  min-height: (@gap + @row) * 8 + @gap;
+  .shadow();
+}
+
+#container
+{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+// ----------------------------------------------------------------------------
+
+#bg > div,
+#fg > div
+{
+  position: absolute;
+
+  .box();
+  // .geomAnimation();
+  .draggable();
+  .resizable();
+}
+
+@c: #888;
+
+#fg > div
+{
+  .radius(2px);
+
+  left: 0px;
+  top: 0px;
+  width: 300px;
+  height: 150px;
+  color: white;
+  padding: 10px;
+
+  line-height: 24px;
+  font-size: 24px;
+
+  .unselectable();
+
+  &.resizing,
+  &.dragging
+  {
+  }
+
+  &.text   { background: #000; }
+  &.image  { background: #fa0; }
+  &.data   { background: #a0f; }
+  &.widget { background: #0cf; }
+  &.text
+  {
+
+    h1
+    {
+      font-weight: normal;
+    }
+  }
+}
+
