@@ -1,13 +1,11 @@
-@animDuration: 0.2s;
-
-.geomAnimation ()
+.geomAnimation (@d: 0.2s)
 {
-  -webkit-transition: left       @animDuration ease
-                    , top        @animDuration ease
-                    , width      @animDuration ease
-                    , height     @animDuration ease
-                    , max-width  @animDuration ease
-                    , min-height @animDuration ease;
+  -webkit-transition: left       @d ease
+                    , top        @d ease
+                    , width      @d ease
+                    , height     @d ease
+                    , max-width  @d ease
+                    , min-height @d ease;
 }
 
 .selectable ()
